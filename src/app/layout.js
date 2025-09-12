@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import Background from "./assets/landingPage.svg"
 import Image from "next/image";
+import Footer from "./components/Footer";
 
 // Load font Quicksand
 const quicksand = Quicksand({
@@ -48,6 +49,7 @@ export default function RootLayout({ children }) {
         <main className="flex flex-col min-h-screen">
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   );
