@@ -45,7 +45,6 @@ export default function RootLayout({ children }) {
         className={`${quicksand.variable} font-sans antialiased min-h-screen`}
       >
         <Navbar />
-        <Image className="absolute" alt="background" src={Background} />
         <main className="flex flex-col min-h-screen">
           {children}
         </main>

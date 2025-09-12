@@ -8,9 +8,9 @@ export default function Navbar() {
             <div className="w-56 h-18 rounded-full bg-white relative ml-8">
                 <Image src={Logo} alt="Logo" fill className="object-contain" />
             </div>
-            <div className="mr-8">
+            {/* <div className="mr-8">
                 <LoginButton />
-            </div>
+            </div> */}
         </div>
     );
 }
