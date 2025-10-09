@@ -1,7 +1,7 @@
 export default function LoginCard(props) {
     return (
-        <div className="w-96 bg-white rounded-2xl shadow-lg p-8 flex flex-col justify-center items-center">
-            <h1 className="text-3xl font-bold mb-4">Login</h1>
+        <div className="w-full max-w-sm sm:max-w-md md:w-96 bg-white rounded-2xl shadow-lg p-6 sm:p-8 mx-4 flex flex-col justify-center items-center">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-4">Login</h1>
             <input type="email" placeholder="e-mail" className="w-full mb-3 p-2 bg-gray-100 border-none rounded-lg text-sm" />
             <input type="password" placeholder="kata sandi" className="w-full mb-3 p-2 bg-gray-100 border-none rounded-lg text-sm" />
             <button className="w-full bg-black text-white py-2 rounded-lg font-semibold mb-4 hover:bg-gray-800 transition duration-300">Login</button>
