@@ -42,7 +42,16 @@ export default function IdentityCard(props) {
     const handleYearChange = (e) => {
         const value = e.target.value;
         const currentYear = new Date().getFullYear();
-        if (value === '' || (parseInt(value) >= 1900 && parseInt(value) <= currentYear)) {
+        
+        if (value === '') {
+            setYear(value);
+            return;
+        }
+        
+        const numValue = parseInt(value);
+        if (value.length < 4) {
+            setYear(value);
+        } else if (numValue >= 1900 && numValue <= currentYear) {
             setYear(value);
             if (day && month && parseInt(day) > getDaysInMonth(month, value)) {
                 setDay(getDaysInMonth(month, value).toString());
