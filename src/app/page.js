@@ -50,7 +50,7 @@ export default function Home() {
 
   return (
     <main className="w-full min-h-screen">
-      <Image className="absolute" alt="background" src={Background} />
+      <Image className="absolute hidden md:block" alt="background" src={Background} />
       <div className="w-full min-h-screen relative overflow-hidden">
         {/* Top Login Button - Hidden on small screens */}
         <div className="w-full h-20 md:h-32 p-4 md:p-16 flex items-center justify-end text-white" data-aos="fade-down" data-aos-duration="1000">
@@ -63,7 +63,7 @@ export default function Home() {
           </button>
         </div>
         {/* Hero Section */}
-        <div className="w-full min-h-screen mt-4 md:mt-8 px-4 md:px-8" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+        <div className="w-full mb-4 md:mb-0  md:min-h-screen mt-4 md:mt-8 px-4 md:px-8" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
           <div className="flex flex-col lg:flex-row justify-evenly items-center gap-8 lg:gap-4">
             {/* Text Content */}
             <div className="w-full lg:w-auto text-center lg:text-left">
@@ -73,15 +73,15 @@ export default function Home() {
               <p className="text-sm sm:text-base md:text-lg mt-4 max-w-lg mx-auto lg:mx-0" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
                 A revolutionary medical device that tracks your glucose levels—effortlessly, through your breath.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 mt-6 md:mt-8 justify-center lg:justify-start" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="300">
+              <div className="flex flex-col sm:flex-row gap-4 mt-6 md:mt-8 justify-center items-center lg:justify-start" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="300">
                 <button
-                  className="flex justify-center items-center w-full sm:w-40 md:w-48 h-14 md:h-16 bg-red-400 rounded-lg"
+                  className="flex justify-center items-center w-44 md:w-48 h-14 md:h-16 bg-red-400 rounded-lg"
                   onClick={() => router.push('/login')}
                 >
                   <h1 className="text-white text-2xl md:text-3xl font-bold">Login</h1>
                 </button>
                 <button
-                  className="group flex justify-center items-center w-full sm:w-40 md:w-48 h-14 md:h-16 border-4 hover:bg-red-400 duration-500 transform border-red-400 rounded-lg"
+                  className="group flex justify-center items-center w-44 md:w-48 h-14 md:h-16 border-4 hover:bg-red-400 duration-500 transform border-red-400 rounded-lg"
                   onClick={() => router.push('/signup')}
                 >
                   <h1 className="text-red-400 group-hover:text-white text-2xl md:text-3xl font-bold">Sign Up</h1>
@@ -89,7 +89,7 @@ export default function Home() {
               </div>
             </div>
             {/* Device Image */}
-            <div className="w-full lg:w-[40%] h-full flex justify-center items-center" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="400">
+            <div className="w-full hidden lg:w-[40%] h-full lg:flex justify-center items-center" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="400">
               <Image src={Lyra} alt="Lyra Device" className="animate-float-robot w-[70%] sm:w-[60%] lg:w-auto lg:ml-12" />
             </div>
           </div>
