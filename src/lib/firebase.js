@@ -11,18 +11,31 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Validate Firebase config
-if (!firebaseConfig.apiKey || !firebaseConfig.authDomain) {
-  throw new Error('Firebase configuration is missing. Please check your environment variables.');
-}
-
 // Initialize Firebase only once (client-side only)
 let app;
 let auth;
 
+// Lazy initialization function
+const initializeFirebase = () => {
+  if (typeof window === 'undefined') {
+    return; // Skip on server-side
+  }
+
+  // Validate config only on client-side
+  if (!firebaseConfig.apiKey || !firebaseConfig.authDomain) {
+    console.error('Firebase configuration is missing. Please check your environment variables.');
+    return;
+  }
+
+  if (!app) {
+    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+    auth = getAuth(app);
+  }
+};
+
+// Auto-initialize on first import (client-side only)
 if (typeof window !== 'undefined') {
-  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-  auth = getAuth(app);
+  initializeFirebase();
 }
 
-export { app, auth };
+export { app, auth, initializeFirebase };

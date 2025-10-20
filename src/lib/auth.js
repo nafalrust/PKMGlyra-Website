@@ -7,19 +7,26 @@ import {
   signInWithPopup,
   onAuthStateChanged
 } from 'firebase/auth';
-import { auth } from './firebase';
+import { auth, initializeFirebase } from './firebase';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7860';
 
 // Helper to check if we're on client-side
 const isClient = typeof window !== 'undefined';
 
+// Helper to ensure Firebase is initialized
+const ensureAuth = () => {
+  if (!isClient) return false;
+  initializeFirebase();
+  return !!auth;
+};
+
 /**
  * Sign up with email and password
  */
 export const signUpWithEmail = async (email, password, fullName = '', nickname = '') => {
-  if (!isClient || !auth) {
-    return { success: false, message: 'Authentication not available on server-side' };
+  if (!ensureAuth()) {
+    return { success: false, message: 'Authentication not available' };
   }
   
   try {
@@ -76,8 +83,8 @@ export const signUpWithEmail = async (email, password, fullName = '', nickname =
  * Login with email and password
  */
 export const loginWithEmail = async (email, password) => {
-  if (!isClient || !auth) {
-    return { success: false, message: 'Authentication not available on server-side' };
+  if (!ensureAuth()) {
+    return { success: false, message: 'Authentication not available' };
   }
   
   try {
@@ -126,8 +133,8 @@ export const loginWithEmail = async (email, password) => {
  * Login with Google
  */
 export const loginWithGoogle = async () => {
-  if (!isClient || !auth) {
-    return { success: false, message: 'Authentication not available on server-side' };
+  if (!ensureAuth()) {
+    return { success: false, message: 'Authentication not available' };
   }
   
   try {
@@ -175,8 +182,8 @@ export const loginWithGoogle = async () => {
  * Logout
  */
 export const logout = async () => {
-  if (!isClient || !auth) {
-    return { success: false, message: 'Authentication not available on server-side' };
+  if (!ensureAuth()) {
+    return { success: false, message: 'Authentication not available' };
   }
   
   try {
@@ -198,7 +205,7 @@ export const logout = async () => {
  * Get current user
  */
 export const getCurrentUser = () => {
-  if (!isClient || !auth) return null;
+  if (!ensureAuth()) return null;
   return auth.currentUser;
 };
 
@@ -206,7 +213,7 @@ export const getCurrentUser = () => {
  * Listen to auth state changes
  */
 export const onAuthStateChange = (callback) => {
-  if (!isClient || !auth) return () => {};
+  if (!ensureAuth()) return () => {};
   return onAuthStateChanged(auth, callback);
 };
 
