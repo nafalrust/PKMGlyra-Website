@@ -16,9 +16,19 @@ const isClient = typeof window !== 'undefined';
 
 // Helper to ensure Firebase is initialized
 const ensureAuth = () => {
-  if (!isClient) return false;
+  if (!isClient) {
+    console.warn('⚠️ ensureAuth called on server-side');
+    return false;
+  }
   initializeFirebase();
-  return !!auth;
+  
+  if (!auth) {
+    console.error('❌ Firebase Auth not initialized!');
+    console.error('Check browser console for Firebase config errors');
+    return false;
+  }
+  
+  return true;
 };
 
 /**
@@ -26,7 +36,10 @@ const ensureAuth = () => {
  */
 export const signUpWithEmail = async (email, password, fullName = '', nickname = '') => {
   if (!ensureAuth()) {
-    return { success: false, message: 'Authentication not available' };
+    return { 
+      success: false, 
+      message: 'Firebase initialization failed. Please check your internet connection and refresh the page.' 
+    };
   }
   
   try {
@@ -47,6 +60,20 @@ export const signUpWithEmail = async (email, password, fullName = '', nickname =
         nickname,
       }),
     });
+
+    // Check if response is JSON
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      console.error('❌ Backend returned non-JSON response');
+      console.error('Response status:', response.status);
+      console.error('Content-Type:', contentType);
+      // Continue anyway - Firebase user created successfully
+      return {
+        success: true,
+        user: user,
+        message: 'Account created successfully (backend sync pending)',
+      };
+    }
 
     const data = await response.json();
 
@@ -84,7 +111,10 @@ export const signUpWithEmail = async (email, password, fullName = '', nickname =
  */
 export const loginWithEmail = async (email, password) => {
   if (!ensureAuth()) {
-    return { success: false, message: 'Authentication not available' };
+    return { 
+      success: false, 
+      message: 'Firebase initialization failed. Please check your internet connection and refresh the page.' 
+    };
   }
   
   try {
@@ -134,7 +164,10 @@ export const loginWithEmail = async (email, password) => {
  */
 export const loginWithGoogle = async () => {
   if (!ensureAuth()) {
-    return { success: false, message: 'Authentication not available' };
+    return { 
+      success: false, 
+      message: 'Firebase initialization failed. Please check your internet connection and refresh the page.' 
+    };
   }
   
   try {

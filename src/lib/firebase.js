@@ -23,13 +23,23 @@ const initializeFirebase = () => {
 
   // Validate config only on client-side
   if (!firebaseConfig.apiKey || !firebaseConfig.authDomain) {
-    console.error('Firebase configuration is missing. Please check your environment variables.');
+    console.error('❌ Firebase configuration is missing!');
+    console.error('Config:', {
+      apiKey: firebaseConfig.apiKey ? '✓ Present' : '✗ Missing',
+      authDomain: firebaseConfig.authDomain ? '✓ Present' : '✗ Missing',
+      projectId: firebaseConfig.projectId ? '✓ Present' : '✗ Missing',
+    });
     return;
   }
 
   if (!app) {
-    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-    auth = getAuth(app);
+    try {
+      app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+      auth = getAuth(app);
+      console.log('✅ Firebase initialized successfully');
+    } catch (error) {
+      console.error('❌ Firebase initialization error:', error);
+    }
   }
 };
 
