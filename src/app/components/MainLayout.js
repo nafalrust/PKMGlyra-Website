@@ -24,7 +24,7 @@ export default function Layout({ children }) {
                     <div className="flex justify-between items-center h-24">
                         <div className="flex items-center">
                             <Link href="/" className="flex items-center space-x-2">
-                                <img src="/logo.png" alt="MST Logo" className="h-8 sm:h-8 md:h-10 lg:h-12 xl:h-14 2xl:h-16 w-auto" />
+                                <Image src="/logo.png" alt="MST Logo" width={80} height={64} className="h-8 sm:h-8 md:h-10 lg:h-12 xl:h-14 2xl:h-16 w-auto" priority />
                             </Link>
                         </div>
 

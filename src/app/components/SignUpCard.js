@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { signUpWithEmail, loginWithGoogle } from '@/lib/auth';
 
 export default function SignUpCard(props) {
@@ -110,7 +111,7 @@ export default function SignUpCard(props) {
                 disabled={loading}
                 className="w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 mt-2 hover:bg-gray-100 transition duration-300 disabled:bg-gray-200"
             >
-                <img src="/google.svg" alt="Google" className="w-5 h-5 mr-2" />
+                <Image src="/google.svg" alt="Google" width={20} height={20} className="mr-2" />
                 <span className="font-medium text-sm">Lanjutkan dengan Google</span>
             </button>
 
