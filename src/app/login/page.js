@@ -1,3 +1,4 @@
+'use client';
 import LoginCard from "../components/LoginCard";
 import Image from "next/image";
 import Pattern from "../assets/pattern.svg";

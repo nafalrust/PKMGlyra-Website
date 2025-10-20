@@ -11,10 +11,17 @@ import { auth } from './firebase';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7860';
 
+// Helper to check if we're on client-side
+const isClient = typeof window !== 'undefined';
+
 /**
  * Sign up with email and password
  */
 export const signUpWithEmail = async (email, password, fullName = '', nickname = '') => {
+  if (!isClient || !auth) {
+    return { success: false, message: 'Authentication not available on server-side' };
+  }
+  
   try {
     // Create user in Firebase Auth (client-side)
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -69,6 +76,10 @@ export const signUpWithEmail = async (email, password, fullName = '', nickname =
  * Login with email and password
  */
 export const loginWithEmail = async (email, password) => {
+  if (!isClient || !auth) {
+    return { success: false, message: 'Authentication not available on server-side' };
+  }
+  
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
@@ -115,6 +126,10 @@ export const loginWithEmail = async (email, password) => {
  * Login with Google
  */
 export const loginWithGoogle = async () => {
+  if (!isClient || !auth) {
+    return { success: false, message: 'Authentication not available on server-side' };
+  }
+  
   try {
     const provider = new GoogleAuthProvider();
     const userCredential = await signInWithPopup(auth, provider);
@@ -160,6 +175,10 @@ export const loginWithGoogle = async () => {
  * Logout
  */
 export const logout = async () => {
+  if (!isClient || !auth) {
+    return { success: false, message: 'Authentication not available on server-side' };
+  }
+  
   try {
     await signOut(auth);
     return {
@@ -179,6 +198,7 @@ export const logout = async () => {
  * Get current user
  */
 export const getCurrentUser = () => {
+  if (!isClient || !auth) return null;
   return auth.currentUser;
 };
 
@@ -186,6 +206,7 @@ export const getCurrentUser = () => {
  * Listen to auth state changes
  */
 export const onAuthStateChange = (callback) => {
+  if (!isClient || !auth) return () => {};
   return onAuthStateChanged(auth, callback);
 };
 

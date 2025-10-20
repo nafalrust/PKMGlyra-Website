@@ -11,8 +11,18 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase only once
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const auth = getAuth(app);
+// Validate Firebase config
+if (!firebaseConfig.apiKey || !firebaseConfig.authDomain) {
+  throw new Error('Firebase configuration is missing. Please check your environment variables.');
+}
+
+// Initialize Firebase only once (client-side only)
+let app;
+let auth;
+
+if (typeof window !== 'undefined') {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  auth = getAuth(app);
+}
 
 export { app, auth };
