@@ -2,15 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { getCurrentUser, onAuthStateChange, logout } from '@/lib/auth';
-import { Pixelify_Sans } from "next/font/google";
-
-// Load Pixelify Sans font
-const pixelifySans = Pixelify_Sans({
-  subsets: ["latin"],
-  variable: "--font-pixelify-sans",
-  display: "swap",
-});
+import Background from '../assets/landingPage.svg';
+import Lyra from '../assets/lyra.svg';
+import Aos from 'aos';
+import 'aos/dist/aos.css';
 
 // Disable static generation for this page
 export const dynamic = 'force-dynamic';
@@ -34,6 +31,10 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, [router]);
 
+  useEffect(() => {
+    Aos.init({ once: true });
+  }, []);
+
   const handleStartExamination = () => {
     // TODO: Navigate to examination page when ready
     console.log('Start examination');
@@ -56,72 +57,50 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="w-full min-h-screen bg-white">
-      {/* Top Navigation Bar - Minimalist */}
-      <div className="w-full h-20 px-4 md:px-16 flex items-center justify-between border-b border-gray-200">
-        <h1 className={`text-2xl md:text-3xl font-bold text-gray-800 ${pixelifySans.className}`}>
-          Glyra
-        </h1>
-        <button
-          onClick={handleLogout}
-          className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800 font-semibold transition-colors duration-200"
-        >
-          Logout
-        </button>
-      </div>
-
-      {/* Main Content - Centered */}
-      <div className="w-full min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-4xl text-center">
-          {/* Welcome Message */}
-          <div className="mb-12">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              Selamat Datang,
-            </h1>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-clip-text text-transparent">
-              {user?.displayName || 'Pengguna'}
-            </h2>
-          </div>
-
-          {/* Start Examination Button */}
-          <div className="flex justify-center mb-8">
-            <button
-              onClick={handleStartExamination}
-              className="group relative px-10 sm:px-14 md:px-20 py-5 sm:py-6 md:py-7
-                       bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 
-                       rounded-full text-white font-bold text-lg sm:text-xl md:text-2xl
-                       shadow-xl shadow-purple-500/30 hover:shadow-purple-500/50
-                       transform hover:scale-105 transition-all duration-300
-                       border-2 border-white/20 hover:border-white/40"
-            >
-              <span className="relative z-10">MULAI PEMERIKSAAN</span>
-              
-              {/* Animated gradient background on hover */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 
-                            opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </button>
-          </div>
-
-          {/* Subtitle */}
-          <div className="mt-12">
-            <p className="text-gray-600 text-base sm:text-lg md:text-xl">
-              Siap untuk memulai pemeriksaan kesehatan Anda?
-            </p>
+    <main className="w-full min-h-screen">
+      <Image className="absolute hidden md:block" alt="background" src={Background} />
+      <div className="w-full min-h-screen relative overflow-hidden">
+        {/* Top Logout Button - Hidden on small screens */}
+        <div className="w-full h-20 md:h-32 p-4 md:p-16 flex items-center justify-end text-white" data-aos="fade-down" data-aos-duration="1000">
+          <button
+            className="hidden md:flex justify-center items-center w-32 h-12 md:w-48 md:h-16 z-10 bg-red-400 rounded-lg"
+            onClick={handleLogout}
+            data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="200"
+          >
+            <h1 className="text-white text-xl md:text-3xl font-bold">Logout</h1>
+          </button>
+        </div>
+        
+        {/* Hero Section */}
+        <div className="w-full mb-4 md:mb-0 md:min-h-screen mt-4 md:mt-8 px-4 md:px-8" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+          <div className="flex flex-col lg:flex-row justify-evenly items-center gap-8 lg:gap-4">
+            {/* Text Content */}
+            <div className="w-full lg:w-auto text-center lg:text-left">
+              <div className="bg-red-700 w-[50%] lg:w-[50%] h-6 md:h-8 mb-2 mx-auto lg:mx-0" data-aos="fade-right" data-aos-duration="1000" />
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold" data-aos="fade-down" data-aos-duration="1000">Selamat Datang,</h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-clip-text text-transparent" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="100">
+                {user?.displayName || 'Pengguna'}
+              </h1>
+              <p className="text-sm sm:text-base md:text-lg mt-4 max-w-lg mx-auto lg:mx-0" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+                Siap untuk memulai pemeriksaan kesehatan Anda?
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 mt-6 md:mt-8 justify-center items-center lg:justify-start" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="300">
+                <button
+                  className="flex justify-center items-center w-56 md:w-64 h-14 md:h-16 bg-red-400 rounded-lg hover:bg-red-500 transition-colors duration-300"
+                  onClick={handleStartExamination}
+                >
+                  <h1 className="text-white text-xl md:text-2xl font-bold">MULAI PEMERIKSAAN</h1>
+                </button>
+              </div>
+            </div>
+            
+            {/* Device Image */}
+            <div className="w-full hidden lg:w-[40%] h-full lg:flex justify-center items-center" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="400">
+              <Image src={Lyra} alt="Lyra Device" className="animate-float-robot w-[70%] sm:w-[60%] lg:w-auto lg:ml-12" />
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Footer - Simple */}
-      <footer className="w-full border-t border-gray-200 py-6">
-        <div className="flex flex-col sm:flex-row justify-between items-center px-4 md:px-16 gap-4">
-          <p className={`text-sm md:text-base text-gray-600 ${pixelifySans.className}`}>
-            Kelompok MST - Teknologi Informasi
-          </p>
-          <p className={`text-xs md:text-sm text-gray-500 ${pixelifySans.className}`}>
-            &copy; 2025. Dibuat untuk Proyek ASD - DTETI FT UGM.
-          </p>
-        </div>
-      </footer>
     </main>
   );
 }
