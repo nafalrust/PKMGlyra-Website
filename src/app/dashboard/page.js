@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import MainLayout from '../components/MainLayout';
 import { getCurrentUser, onAuthStateChange } from '@/lib/auth';
 
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';
+
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState(null);

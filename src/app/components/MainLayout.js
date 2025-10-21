@@ -1,20 +1,26 @@
-"use clients";
+"use client";
 
 import React from "react";
 import { useState } from "react";
 import Link from "next/link";
-import{  Menu,
-    X,
-} from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Image from "next/image";
+import { Pixelify_Sans } from "next/font/google";
+
+// Load Pixelify Sans font
+const pixelifySans = Pixelify_Sans({
+  subsets: ["latin"],
+  variable: "--font-pixelify-sans",
+  display: "swap",
+});
 
 export default function Layout({ children }) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const navigation = [
         { name: "Home", href: "/" },
-        { name: "Log In", href: "/about" },
-        { name: "Get Started - Sign Up", href: "/contact" },
+        { name: "Log In", href: "/login" },
+        { name: "Get Started - Sign Up", href: "/signup" },
     ];
 
     return (
