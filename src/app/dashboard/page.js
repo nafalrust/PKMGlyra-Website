@@ -78,7 +78,7 @@ export default function Dashboard() {
             <div className="w-full lg:w-auto text-center lg:text-left">
               <div className="bg-red-700 w-[50%] lg:w-[50%] h-6 md:h-8 mb-2 mx-auto lg:mx-0" data-aos="fade-right" data-aos-duration="1000" />
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold" data-aos="fade-down" data-aos-duration="1000">Welcome,</h1>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-clip-text text-transparent" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="100">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-red-700" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="100">
                 {user?.displayName || 'User'}
               </h1>
               <p className="text-sm sm:text-base md:text-lg mt-4 max-w-lg mx-auto lg:mx-0" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
