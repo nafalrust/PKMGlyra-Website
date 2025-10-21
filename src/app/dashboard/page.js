@@ -38,7 +38,7 @@ export default function Dashboard() {
   const handleStartExamination = () => {
     // TODO: Navigate to examination page when ready
     console.log('Start examination');
-    alert('Fitur pemeriksaan akan segera hadir!');
+    alert('Examination feature coming soon!');
   };
 
   const handleLogout = async () => {
@@ -77,19 +77,19 @@ export default function Dashboard() {
             {/* Text Content */}
             <div className="w-full lg:w-auto text-center lg:text-left">
               <div className="bg-red-700 w-[50%] lg:w-[50%] h-6 md:h-8 mb-2 mx-auto lg:mx-0" data-aos="fade-right" data-aos-duration="1000" />
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold" data-aos="fade-down" data-aos-duration="1000">Selamat Datang,</h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold" data-aos="fade-down" data-aos-duration="1000">Welcome,</h1>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-clip-text text-transparent" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="100">
-                {user?.displayName || 'Pengguna'}
+                {user?.displayName || 'User'}
               </h1>
               <p className="text-sm sm:text-base md:text-lg mt-4 max-w-lg mx-auto lg:mx-0" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-                Siap untuk memulai pemeriksaan kesehatan Anda?
+                Ready to start your health examination?
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-6 md:mt-8 justify-center items-center lg:justify-start" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="300">
                 <button
                   className="flex justify-center items-center w-56 md:w-64 h-14 md:h-16 bg-red-400 rounded-lg hover:bg-red-500 transition-colors duration-300"
                   onClick={handleStartExamination}
                 >
-                  <h1 className="text-white text-xl md:text-2xl font-bold">MULAI PEMERIKSAAN</h1>
+                  <h1 className="text-white text-xl md:text-2xl font-bold">START EXAMINATION</h1>
                 </button>
               </div>
             </div>
