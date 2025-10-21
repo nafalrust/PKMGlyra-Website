@@ -19,8 +19,9 @@ export default function LoginCard(props) {
         const result = await loginWithEmail(email, password);
 
         if (result.success) {
-            // Redirect to identity page or dashboard
-            router.push('/identity');
+            // Check if user has completed identity
+            // For now, always redirect to dashboard
+            router.push('/dashboard');
         } else {
             setError(result.message);
         }
@@ -35,7 +36,7 @@ export default function LoginCard(props) {
         const result = await loginWithGoogle();
 
         if (result.success) {
-            router.push('/identity');
+            router.push('/dashboard');
         } else {
             setError(result.message);
         }

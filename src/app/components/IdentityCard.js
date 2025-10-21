@@ -112,9 +112,9 @@ export default function IdentityCard(props) {
         });
 
         if (result.success) {
-            // Redirect to dashboard or home
+            // Redirect to dashboard
             alert('Profile updated successfully!');
-            router.push('/');
+            router.push('/dashboard');
         } else {
             setError(result.message);
         }
