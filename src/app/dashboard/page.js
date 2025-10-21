@@ -2,8 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import MainLayout from '../components/MainLayout';
-import { getCurrentUser, onAuthStateChange } from '@/lib/auth';
+import { getCurrentUser, onAuthStateChange, logout } from '@/lib/auth';
+import { Pixelify_Sans } from "next/font/google";
+
+// Load Pixelify Sans font
+const pixelifySans = Pixelify_Sans({
+  subsets: ["latin"],
+  variable: "--font-pixelify-sans",
+  display: "swap",
+});
 
 // Disable static generation for this page
 export const dynamic = 'force-dynamic';
@@ -33,61 +40,88 @@ export default function Dashboard() {
     alert('Fitur pemeriksaan akan segera hadir!');
   };
 
+  const handleLogout = async () => {
+    const result = await logout();
+    if (result.success) {
+      router.push('/');
+    }
+  };
+
   if (loading) {
     return (
-      <MainLayout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-white text-xl">Loading...</div>
-        </div>
-      </MainLayout>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-gray-800 text-xl">Loading...</div>
+      </div>
     );
   }
 
   return (
-    <MainLayout>
-      <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-4xl">
-          {/* Welcome Section */}
-          <div className="text-center mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+    <main className="w-full min-h-screen bg-white">
+      {/* Top Navigation Bar - Minimalist */}
+      <div className="w-full h-20 px-4 md:px-16 flex items-center justify-between border-b border-gray-200">
+        <h1 className={`text-2xl md:text-3xl font-bold text-gray-800 ${pixelifySans.className}`}>
+          Glyra
+        </h1>
+        <button
+          onClick={handleLogout}
+          className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800 font-semibold transition-colors duration-200"
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Main Content - Centered */}
+      <div className="w-full min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-4xl text-center">
+          {/* Welcome Message */}
+          <div className="mb-12">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               Selamat Datang,
             </h1>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-clip-text text-transparent">
               {user?.displayName || 'Pengguna'}
             </h2>
           </div>
 
           {/* Start Examination Button */}
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-8">
             <button
               onClick={handleStartExamination}
-              className="group relative px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 
-                       bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 
+              className="group relative px-10 sm:px-14 md:px-20 py-5 sm:py-6 md:py-7
+                       bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 
                        rounded-full text-white font-bold text-lg sm:text-xl md:text-2xl
-                       shadow-lg shadow-purple-500/50 hover:shadow-purple-500/75
+                       shadow-xl shadow-purple-500/30 hover:shadow-purple-500/50
                        transform hover:scale-105 transition-all duration-300
                        border-2 border-white/20 hover:border-white/40"
             >
               <span className="relative z-10">MULAI PEMERIKSAAN</span>
               
-              {/* Animated gradient background */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 
+              {/* Animated gradient background on hover */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 
                             opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              
-              {/* Pulse effect */}
-              <div className="absolute inset-0 rounded-full bg-white/20 
-                            animate-ping opacity-0 group-hover:opacity-20" />
             </button>
           </div>
 
-          {/* Additional Info Section (Optional) */}
-          <div className="mt-12 sm:mt-16 text-center">
-            <p className="text-white/70 text-sm sm:text-base md:text-lg">
+          {/* Subtitle */}
+          <div className="mt-12">
+            <p className="text-gray-600 text-base sm:text-lg md:text-xl">
               Siap untuk memulai pemeriksaan kesehatan Anda?
             </p>
           </div>
         </div>
       </div>
-    </MainLayout>
+
+      {/* Footer - Simple */}
+      <footer className="w-full border-t border-gray-200 py-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center px-4 md:px-16 gap-4">
+          <p className={`text-sm md:text-base text-gray-600 ${pixelifySans.className}`}>
+            Kelompok MST - Teknologi Informasi
+          </p>
+          <p className={`text-xs md:text-sm text-gray-500 ${pixelifySans.className}`}>
+            &copy; 2025. Dibuat untuk Proyek ASD - DTETI FT UGM.
+          </p>
+        </div>
+      </footer>
+    </main>
   );
 }
