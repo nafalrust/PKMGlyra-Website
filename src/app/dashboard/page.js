@@ -36,9 +36,8 @@ export default function Dashboard() {
   }, []);
 
   const handleStartExamination = () => {
-    // TODO: Navigate to examination page when ready
-    console.log('Start examination');
-    alert('Examination feature coming soon!');
+    // Navigate to QR scan page
+    router.push('/scan-qr');
   };
 
   const handleLogout = async () => {
@@ -60,14 +59,14 @@ export default function Dashboard() {
     <main className="w-full min-h-screen">
       <Image className="absolute hidden md:block" alt="background" src={Background} />
       <div className="w-full min-h-screen relative overflow-hidden">
-        {/* Top Logout Button - Hidden on small screens */}
+        {/* Top Logout Button */}
         <div className="w-full h-20 md:h-32 p-4 md:p-16 flex items-center justify-end text-white" data-aos="fade-down" data-aos-duration="1000">
           <button
-            className="hidden md:flex justify-center items-center w-32 h-12 md:w-48 md:h-16 z-10 bg-red-400 rounded-lg"
+            className="flex justify-center items-center w-28 h-10 md:w-48 md:h-16 z-10 bg-red-400 hover:bg-red-500 rounded-lg transition-colors duration-200"
             onClick={handleLogout}
             data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="200"
           >
-            <h1 className="text-white text-xl md:text-3xl font-bold">Logout</h1>
+            <h1 className="text-white text-lg md:text-3xl font-bold">Logout</h1>
           </button>
         </div>
         

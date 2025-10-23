@@ -38,3 +38,12 @@ body {
 .animate-float-robot {
   animation: float-robot 6s ease-in-out infinite;
 }
+
+/* Animasi scanning line untuk QR scanner */
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+.animate-scan-line {
+  animation: scan-line 2s ease-in-out infinite;
+}
