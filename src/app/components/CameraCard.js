@@ -2,18 +2,112 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { BrowserMultiFormatReader } from '@zxing/library';
+import { getCurrentUser } from '@/lib/auth';
 
 export default function CameraCard() {
   const router = useRouter();
   const [scanning, setScanning] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [stream, setStream] = useState(null);
+  const [processing, setProcessing] = useState(false);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const codeReaderRef = useRef(null);
+  const scanIntervalRef = useRef(null);
+
+  useEffect(() => {
+    // Initialize code reader
+    codeReaderRef.current = new BrowserMultiFormatReader();
+    
+    return () => {
+      stopCamera();
+      if (codeReaderRef.current) {
+        codeReaderRef.current.reset();
+      }
+    };
+  }, []);
+
+  const scanQRCode = async () => {
+    if (!videoRef.current || !canvasRef.current || processing) return;
+
+    try {
+      const canvas = canvasRef.current;
+      const video = videoRef.current;
+      
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      
+      const result = await codeReaderRef.current.decodeFromImageData(imageData);
+      
+      if (result) {
+        setProcessing(true);
+        await handleQRCodeDetected(result.text);
+      }
+    } catch (err) {
+      // No QR code detected in this frame, continue scanning
+    }
+  };
+
+  const handleQRCodeDetected = async (qrData) => {
+    console.log('QR Code detected:', qrData);
+    
+    try {
+      setError('');
+      setSuccess('QR Code detected! Saving to database...');
+      
+      // Get current user
+      const user = getCurrentUser();
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      // Send QR data to backend
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${API_URL}/api/auth/save-qr`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: user.uid,
+          qrData: qrData,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSuccess('QR Code saved successfully!');
+        stopCamera();
+        
+        // Redirect to dashboard after 2 seconds
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 2000);
+      } else {
+        throw new Error(data.message || 'Failed to save QR code');
+      }
+    } catch (err) {
+      console.error('Error saving QR code:', err);
+      setError(err.message || 'Failed to save QR code. Please try again.');
+      setProcessing(false);
+    }
+  };
 
   const startCamera = async () => {
     try {
       setError('');
+      setSuccess('');
+      setProcessing(false);
+      
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { 
           facingMode: 'environment',
@@ -37,6 +131,9 @@ export default function CameraCard() {
           });
         };
       }
+      
+      // Start scanning QR codes every 500ms
+      scanIntervalRef.current = setInterval(scanQRCode, 500);
     } catch (err) {
       console.error('Error accessing camera:', err);
       setError('Unable to access camera. Please check your permissions.');
@@ -44,11 +141,17 @@ export default function CameraCard() {
   };
 
   const stopCamera = () => {
+    if (scanIntervalRef.current) {
+      clearInterval(scanIntervalRef.current);
+      scanIntervalRef.current = null;
+    }
+    
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
       setStream(null);
     }
     setScanning(false);
+    setProcessing(false);
   };
 
   const handleCancel = () => {
@@ -81,6 +184,12 @@ export default function CameraCard() {
       {error && (
         <div className="w-full mb-3 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
           {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="w-full mb-3 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm">
+          {success}
         </div>
       )}
 

@@ -11,6 +11,7 @@
   "dependencies": {
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.3.0",
+    "@zxing/library": "^0.21.3",
     "aos": "^2.3.4",
     "firebase": "^12.4.0",
     "lucide-react": "^0.546.0",
