@@ -15,15 +15,28 @@ export default function CameraCard() {
     try {
       setError('');
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' } // Use back camera on mobile
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
       });
       
       setStream(mediaStream);
+      setScanning(true);
+      
+      // Wait for video element to be ready
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        videoRef.current.play();
+        
+        // Ensure video plays
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current.play().catch(err => {
+            console.error('Error playing video:', err);
+            setError('Unable to start video playback');
+          });
+        };
       }
-      setScanning(true);
     } catch (err) {
       console.error('Error accessing camera:', err);
       setError('Unable to access camera. Please check your permissions.');
@@ -49,6 +62,13 @@ export default function CameraCard() {
       stopCamera();
     };
   }, []);
+
+  // Update video source when stream changes
+  useEffect(() => {
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [stream]);
 
   return (
     <div className="w-full max-w-sm sm:max-w-md md:w-96 bg-white rounded-2xl shadow-lg p-6 sm:p-8 mx-4 flex flex-col justify-center items-center">
