@@ -13,6 +13,7 @@ export default function CameraCard() {
   const [stream, setStream] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [scanned, setScanned] = useState(false);
+  const [scanCount, setScanCount] = useState(0);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const codeReaderRef = useRef(null);
@@ -33,26 +34,43 @@ export default function CameraCard() {
   const scanQRCode = async () => {
     if (!videoRef.current || !canvasRef.current || processing) return;
 
+    const video = videoRef.current;
+    
+    // Check if video is ready
+    if (video.readyState !== video.HAVE_ENOUGH_DATA) {
+      console.log('Video not ready yet...');
+      return;
+    }
+    
+    // Update scan count for debugging
+    setScanCount(prev => prev + 1);
+
     try {
       const canvas = canvasRef.current;
-      const video = videoRef.current;
       
+      // Set canvas size to match video
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
+      
+      if (canvas.width === 0 || canvas.height === 0) {
+        console.log('Canvas dimensions are 0');
+        return;
+      }
       
       const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      // Try to decode QR code
+      const result = await codeReaderRef.current.decodeFromImageElement(video);
       
-      const result = await codeReaderRef.current.decodeFromImageData(imageData);
-      
-      if (result) {
+      if (result && result.text) {
+        console.log('QR Code found:', result.text);
         setProcessing(true);
         await handleQRCodeDetected(result.text);
       }
     } catch (err) {
       // No QR code detected in this frame, continue scanning
+      // This is normal, so we don't log it
     }
   };
 
@@ -132,6 +150,7 @@ export default function CameraCard() {
       setSuccess('');
       setProcessing(false);
       setScanned(false);
+      setScanCount(0);
       
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { 
@@ -148,17 +167,25 @@ export default function CameraCard() {
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
         
-        // Ensure video plays
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current.play().catch(err => {
+        // Ensure video plays and wait for it to be ready
+        videoRef.current.onloadedmetadata = async () => {
+          try {
+            await videoRef.current.play();
+            console.log('Video playing, video dimensions:', 
+              videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
+            
+            // Wait a bit for video to stabilize before starting scan
+            setTimeout(() => {
+              console.log('Starting QR code scanning...');
+              // Start scanning QR codes every 300ms (faster)
+              scanIntervalRef.current = setInterval(scanQRCode, 300);
+            }, 500);
+          } catch (err) {
             console.error('Error playing video:', err);
             setError('Unable to start video playback');
-          });
+          }
         };
       }
-      
-      // Start scanning QR codes every 500ms
-      scanIntervalRef.current = setInterval(scanQRCode, 500);
     } catch (err) {
       console.error('Error accessing camera:', err);
       setError('Unable to access camera. Please check your permissions.');
@@ -178,6 +205,7 @@ export default function CameraCard() {
     setScanning(false);
     setProcessing(false);
     setScanned(false);
+    setScanCount(0);
   };
 
   const handleCancel = () => {
@@ -208,7 +236,7 @@ export default function CameraCard() {
       </p>
       
       <p className="text-gray-500 text-xs mb-6 text-center">
-        Scanner will automatically detect QR code every 0.5 seconds
+        Scanner will automatically detect QR code every 0.3 seconds
       </p>
 
       {error && (
@@ -288,6 +316,13 @@ export default function CameraCard() {
                 <div className="w-3/4 h-1 bg-red-400 opacity-75 animate-scan-line"></div>
               </div>
             )}
+            
+            {/* Scan Counter - Debug Info */}
+            {!scanned && scanning && (
+              <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
+                Scans: {scanCount}
+              </div>
+            )}
           </div>
         )}
         <canvas ref={canvasRef} className="hidden" />
@@ -324,8 +359,14 @@ export default function CameraCard() {
       </p>
       
       <p className="text-xs text-gray-400 mt-2 text-center">
-        Scanning every 0.5 seconds • Auto-save when detected
+        Scanning every 0.3 seconds • Auto-save when detected
       </p>
+      
+      {scanning && (
+        <p className="text-xs text-blue-600 mt-1 text-center font-semibold">
+          📷 Camera Active - Scan attempts: {scanCount}
+        </p>
+      )}
     </div>
   );
 }
