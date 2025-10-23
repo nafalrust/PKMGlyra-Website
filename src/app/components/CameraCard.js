@@ -12,6 +12,7 @@ export default function CameraCard() {
   const [success, setSuccess] = useState('');
   const [stream, setStream] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [scanned, setScanned] = useState(false);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const codeReaderRef = useRef(null);
@@ -58,9 +59,28 @@ export default function CameraCard() {
   const handleQRCodeDetected = async (qrData) => {
     console.log('QR Code detected:', qrData);
     
+    // Stop scanning immediately
+    if (scanIntervalRef.current) {
+      clearInterval(scanIntervalRef.current);
+      scanIntervalRef.current = null;
+    }
+    
+    // Vibrate if supported (mobile devices)
+    if (navigator.vibrate) {
+      navigator.vibrate(200);
+    }
+    
+    // Show scanned state with animation
+    setScanned(true);
+    
     try {
       setError('');
-      setSuccess('QR Code detected! Saving to database...');
+      setSuccess('✓ QR Code Detected!');
+      
+      // Wait a moment for visual feedback
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      setSuccess('Saving to database...');
       
       // Get current user
       const user = getCurrentUser();
@@ -85,20 +105,24 @@ export default function CameraCard() {
       const data = await response.json();
 
       if (data.success) {
-        setSuccess('QR Code saved successfully!');
-        stopCamera();
+        setSuccess('✓ QR Code Saved Successfully!');
         
-        // Redirect to dashboard after 2 seconds
+        // Redirect to dashboard after 1.5 seconds
         setTimeout(() => {
+          stopCamera();
           router.push('/dashboard');
-        }, 2000);
+        }, 1500);
       } else {
         throw new Error(data.message || 'Failed to save QR code');
       }
     } catch (err) {
       console.error('Error saving QR code:', err);
       setError(err.message || 'Failed to save QR code. Please try again.');
+      setScanned(false);
       setProcessing(false);
+      
+      // Restart scanning after error
+      scanIntervalRef.current = setInterval(scanQRCode, 500);
     }
   };
 
@@ -107,6 +131,7 @@ export default function CameraCard() {
       setError('');
       setSuccess('');
       setProcessing(false);
+      setScanned(false);
       
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { 
@@ -152,6 +177,7 @@ export default function CameraCard() {
     }
     setScanning(false);
     setProcessing(false);
+    setScanned(false);
   };
 
   const handleCancel = () => {
@@ -177,8 +203,12 @@ export default function CameraCard() {
     <div className="w-full max-w-sm sm:max-w-md md:w-96 bg-white rounded-2xl shadow-lg p-6 sm:p-8 mx-4 flex flex-col justify-center items-center">
       <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-center">Scan QR Code</h1>
       
-      <p className="text-gray-600 text-sm sm:text-base mb-6 text-center">
+      <p className="text-gray-600 text-sm sm:text-base mb-2 text-center">
         Position the QR code within the camera frame
+      </p>
+      
+      <p className="text-gray-500 text-xs mb-6 text-center">
+        Scanner will automatically detect QR code every 0.5 seconds
       </p>
 
       {error && (
@@ -188,7 +218,10 @@ export default function CameraCard() {
       )}
 
       {success && (
-        <div className="w-full mb-3 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm">
+        <div className="w-full mb-3 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm font-semibold flex items-center gap-2 animate-pulse">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
           {success}
         </div>
       )}
@@ -226,20 +259,35 @@ export default function CameraCard() {
               playsInline
               muted
             />
+            
+            {/* Success Flash Overlay */}
+            {scanned && (
+              <div className="absolute inset-0 bg-green-500 bg-opacity-30 flex items-center justify-center animate-pulse">
+                <div className="bg-white rounded-full p-6">
+                  <svg className="w-20 h-20 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </div>
+            )}
+            
             {/* QR Code Frame Overlay */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative w-3/4 h-3/4">
                 {/* Corner borders */}
-                <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white"></div>
-                <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white"></div>
-                <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white"></div>
-                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white"></div>
+                <div className={`absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 transition-colors duration-300 ${scanned ? 'border-green-400' : 'border-white'}`}></div>
+                <div className={`absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 transition-colors duration-300 ${scanned ? 'border-green-400' : 'border-white'}`}></div>
+                <div className={`absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 transition-colors duration-300 ${scanned ? 'border-green-400' : 'border-white'}`}></div>
+                <div className={`absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 transition-colors duration-300 ${scanned ? 'border-green-400' : 'border-white'}`}></div>
               </div>
             </div>
-            {/* Scanning line animation */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-3/4 h-1 bg-red-400 opacity-75 animate-scan-line"></div>
-            </div>
+            
+            {/* Scanning line animation - only show when not scanned */}
+            {!scanned && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-3/4 h-1 bg-red-400 opacity-75 animate-scan-line"></div>
+              </div>
+            )}
           </div>
         )}
         <canvas ref={canvasRef} className="hidden" />
@@ -273,6 +321,10 @@ export default function CameraCard() {
 
       <p className="text-xs text-gray-500 mt-4 text-center">
         Make sure the QR code is well-lit and clearly visible
+      </p>
+      
+      <p className="text-xs text-gray-400 mt-2 text-center">
+        Scanning every 0.5 seconds • Auto-save when detected
       </p>
     </div>
   );
