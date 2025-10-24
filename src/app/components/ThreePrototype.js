@@ -4,7 +4,7 @@ import { useRef } from 'react';
 
 function Model() {
   const ref = useRef();
-  const { scene } = useGLTF('/glyra.glb');
+  const { scene } = useGLTF('/ptype5.glb');
   useFrame(() => {
     if (ref.current) {
       ref.current.rotation.y += 0.01; // putar otomatis
