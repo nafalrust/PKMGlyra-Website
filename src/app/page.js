@@ -99,7 +99,7 @@ export default function Home() {
             Meet Our Device <span className="text-red-400">Glyra</span>
           </h2>
           <div className="w-full max-w-sm md:max-w-md lg:w-96 h-64 md:h-80 lg:h-96 flex justify-center items-center mb-8 md:mb-10 mt-4 md:mt-6">
-            <div className="w-full h-full flex items-center justify-center p-3 md:p-6 rounded-lg bg-gray-50">
+            <div className="w-full h-full flex items-center justify-center p-3 md:p-6 rounded-lg">
               <ModelPrototype />
             </div>
           </div>
