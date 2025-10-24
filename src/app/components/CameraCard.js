@@ -14,14 +14,16 @@ export default function CameraCard() {
   const [processing, setProcessing] = useState(false);
   const [scanned, setScanned] = useState(false);
   const [scanCount, setScanCount] = useState(0);
+  const [manualMode, setManualMode] = useState(false);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const codeReaderRef = useRef(null);
   const scanIntervalRef = useRef(null);
 
   useEffect(() => {
-    // Initialize code reader
+    // Initialize code reader with hints for better QR detection
     codeReaderRef.current = new BrowserMultiFormatReader();
+    console.log('ZXing BrowserMultiFormatReader initialized');
     
     return () => {
       stopCamera();
@@ -38,7 +40,7 @@ export default function CameraCard() {
     
     // Check if video is ready
     if (video.readyState !== video.HAVE_ENOUGH_DATA) {
-      console.log('Video not ready yet...');
+      console.log('⏳ Video not ready yet, readyState:', video.readyState);
       return;
     }
     
@@ -49,28 +51,54 @@ export default function CameraCard() {
       const canvas = canvasRef.current;
       
       // Set canvas size to match video
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        console.log('📐 Canvas size set to:', canvas.width, 'x', canvas.height);
+      }
       
       if (canvas.width === 0 || canvas.height === 0) {
-        console.log('Canvas dimensions are 0');
+        console.log('❌ Canvas dimensions are 0');
         return;
       }
       
+      // Draw current video frame to canvas
       const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       
-      // Try to decode QR code
-      const result = await codeReaderRef.current.decodeFromImageElement(video);
+      // METHOD 1: Try to decode from video element directly (faster)
+      try {
+        const result = await codeReaderRef.current.decodeFromVideoElement(video);
+        if (result && result.text) {
+          console.log('✅ QR Code found (video method):', result.text);
+          setProcessing(true);
+          await handleQRCodeDetected(result.text);
+          return;
+        }
+      } catch (err) {
+        // Video method failed, try canvas method
+      }
       
-      if (result && result.text) {
-        console.log('QR Code found:', result.text);
-        setProcessing(true);
-        await handleQRCodeDetected(result.text);
+      // METHOD 2: Try to decode from canvas image data (more reliable)
+      try {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const result = await codeReaderRef.current.decodeFromImageData(imageData);
+        if (result && result.text) {
+          console.log('✅ QR Code found (canvas method):', result.text);
+          setProcessing(true);
+          await handleQRCodeDetected(result.text);
+          return;
+        }
+      } catch (err) {
+        // No QR code in this frame
+      }
+      
+      // Log every 10th attempt for debugging
+      if (scanCount % 10 === 0) {
+        console.log('🔍 Scan attempt', scanCount, '- No QR code detected');
       }
     } catch (err) {
-      // No QR code detected in this frame, continue scanning
-      // This is normal, so we don't log it
+      console.error('❌ Scan error:', err);
     }
   };
 
@@ -151,6 +179,7 @@ export default function CameraCard() {
       setProcessing(false);
       setScanned(false);
       setScanCount(0);
+      setManualMode(false);
       
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { 
@@ -206,6 +235,14 @@ export default function CameraCard() {
     setProcessing(false);
     setScanned(false);
     setScanCount(0);
+    setManualMode(false);
+  };
+
+  const handleManualScan = async () => {
+    console.log('🖱️ Manual scan triggered');
+    setManualMode(true);
+    await scanQRCode();
+    setTimeout(() => setManualMode(false), 500);
   };
 
   const handleCancel = () => {
@@ -307,6 +344,11 @@ export default function CameraCard() {
                 <div className={`absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 transition-colors duration-300 ${scanned ? 'border-green-400' : 'border-white'}`}></div>
                 <div className={`absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 transition-colors duration-300 ${scanned ? 'border-green-400' : 'border-white'}`}></div>
                 <div className={`absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 transition-colors duration-300 ${scanned ? 'border-green-400' : 'border-white'}`}></div>
+                
+                {/* Center target helper */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-white rounded-full"></div>
+                </div>
               </div>
             </div>
             
@@ -319,8 +361,20 @@ export default function CameraCard() {
             
             {/* Scan Counter - Debug Info */}
             {!scanned && scanning && (
-              <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
-                Scans: {scanCount}
+              <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-3 py-2 rounded">
+                <div>🔍 Scans: {scanCount}</div>
+                <div className="text-[10px] text-gray-300 mt-1">
+                  {scanCount > 0 ? 'Scanning...' : 'Starting...'}
+                </div>
+              </div>
+            )}
+            
+            {/* Help Text */}
+            {!scanned && scanning && scanCount > 20 && (
+              <div className="absolute bottom-4 left-0 right-0 text-center">
+                <div className="inline-block bg-yellow-500 bg-opacity-90 text-black text-xs px-4 py-2 rounded-lg font-semibold">
+                  💡 Tips: Jaga jarak 20-30cm, cahaya terang
+                </div>
               </div>
             )}
           </div>
@@ -338,12 +392,27 @@ export default function CameraCard() {
             Start Camera
           </button>
         ) : (
-          <button
-            onClick={stopCamera}
-            className="w-full py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-colors duration-200"
-          >
-            Stop Camera
-          </button>
+          <>
+            <button
+              onClick={stopCamera}
+              className="w-full py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-colors duration-200"
+            >
+              Stop Camera
+            </button>
+            
+            {/* Manual Scan Button */}
+            <button
+              onClick={handleManualScan}
+              disabled={processing || scanned}
+              className={`w-full py-3 rounded-lg font-semibold transition-colors duration-200 ${
+                processing || scanned
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
+              }`}
+            >
+              {manualMode ? '⏳ Scanning...' : '📸 Manual Scan'}
+            </button>
+          </>
         )}
         
         <button
