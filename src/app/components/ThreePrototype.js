@@ -9,10 +9,7 @@ function Model() {
 
   useEffect(() => {
     if (!ref.current) return;
-    // rotate model so it's upright (90 degrees on Z axis)
     ref.current.rotation.y = Math.PI / 2;
-    // ref.current.rotation.x = Math.PI/2;
-    // compute bounding box and center model (after rotation)
     const box = new THREE.Box3().setFromObject(ref.current);
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
