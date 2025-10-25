@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser, onAuthStateChange } from '@/lib/auth';
-import CameraCard from '../components/CameraCard';
+// import CameraCard from '../components/CameraCard';
+import QrScanner from '../components/ScanQRCard';
 
 export default function ScanQR() {
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function ScanQR() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
-      <CameraCard />
+      <QrScanner />
     </div>
   );
 }
