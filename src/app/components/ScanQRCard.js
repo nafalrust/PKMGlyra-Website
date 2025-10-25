@@ -136,12 +136,12 @@ export default function QrScanner() {
         Scanning every 0.3 seconds • Auto-save when detected
       </p>
 
-      {result && (
+      {/* {result && (
         <div className="mt-4 text-left text-sm break-words">
           <strong>Last scanned:</strong>
           <p className="mt-1">{result}</p>
         </div>
-      )}
+      )} */}
 
       {error && (
         <div className="mt-3 text-left text-sm text-red-600">
