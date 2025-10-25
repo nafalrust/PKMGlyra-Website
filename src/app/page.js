@@ -50,7 +50,7 @@ export default function Home() {
 
   return (
     <main className="w-full min-h-screen">
-      <Image className="absolute hidden md:block" alt="background" src={Background} />
+      <Image className="absolute hidden md:block -z-10" alt="background" src={Background} />
       <div className="w-full min-h-screen relative overflow-hidden">
         {/* Top Login Button - Hidden on small screens */}
         <div className="w-full h-20 md:h-32 p-4 md:p-16 flex items-center justify-end text-white" data-aos="fade-down" data-aos-duration="1000">

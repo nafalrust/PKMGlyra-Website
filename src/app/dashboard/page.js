@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { getCurrentUser, onAuthStateChange, logout } from '@/lib/auth';
@@ -16,11 +16,20 @@ export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const isLoggingOutRef = useRef(false);
 
   useEffect(() => {
     // Check authentication
     const unsubscribe = onAuthStateChange((currentUser) => {
       if (!currentUser) {
+        // If we initiated a logout, redirect to home instead of login
+        if (isLoggingOutRef.current) {
+          isLoggingOutRef.current = false;
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
         router.push('/login');
       } else {
         setUser(currentUser);
@@ -41,10 +50,21 @@ export default function Dashboard() {
   };
 
   const handleLogout = async () => {
-    const result = await logout();
-    if (result.success) {
+    try {
+      // Mark that logout was initiated from this component so auth listener
+      // does not immediately redirect to /login
+      isLoggingOutRef.current = true;
+      const result = await logout();
+      // Always navigate to home after logout attempt
+      router.push('/');
+      if (!result.success) {
+        console.error('Logout failed:', result.message);
+      }
+    } catch (err) {
+      console.error('Logout error:', err);
       router.push('/');
     }
+    // console.log('Logout function is currently disabled.');
   };
 
   if (loading) {
@@ -57,10 +77,10 @@ export default function Dashboard() {
 
   return (
     <main className="w-full min-h-screen">
-      <Image className="absolute hidden md:block" alt="background" src={Background} />
+      <Image className="absolute -z-10 hidden md:block" alt="background" src={Background} />
       <div className="w-full min-h-screen relative overflow-hidden">
         {/* Top Logout Button */}
-        <div className="w-full h-20 md:h-32 p-4 md:p-16 flex items-center justify-end text-white" data-aos="fade-down" data-aos-duration="1000">
+        <div className="w-full h-20 md:h-32 z-20 p-4 md:p-16 flex items-center justify-end text-white" data-aos="fade-down" data-aos-duration="1000">
           <button
             className="flex justify-center items-center w-28 h-10 md:w-48 md:h-16 z-10 bg-red-400 hover:bg-red-500 rounded-lg transition-colors duration-200"
             onClick={handleLogout}
