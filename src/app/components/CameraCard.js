@@ -222,6 +222,7 @@ export default function CameraCard() {
       )}
 
       <div className="mb-6 w-full">
+        {/* Placeholder - shown when NOT scanning */}
         {!scanning && (
           <div className="w-full aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex flex-col items-center justify-center gap-4 border-2 border-dashed border-gray-300">
             <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,19 +234,18 @@ export default function CameraCard() {
           </div>
         )}
         
-        {scanning && (
-          <div 
-            id="qr-reader" 
-            style={{ 
-              border: scanned ? '4px solid #10b981' : '4px solid #ef4444',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              width: '100%',
-              minHeight: '300px',
-              display: 'block'
-            }}
-          />
-        )}
+        {/* QR Reader - ALWAYS in DOM but hidden when not scanning */}
+        <div 
+          id="qr-reader" 
+          style={{ 
+            border: scanned ? '4px solid #10b981' : '4px solid #ef4444',
+            borderRadius: '12px',
+            overflow: 'hidden',
+            width: '100%',
+            minHeight: '300px',
+            display: scanning ? 'block' : 'none'
+          }}
+        />
       </div>
 
       {scanned && (
