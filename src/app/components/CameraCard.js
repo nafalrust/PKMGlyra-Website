@@ -99,12 +99,29 @@ export default function CameraCard() {
       setProcessing(false);
       setScanned(false);
       
-      console.log('📷 Initializing camera...');
+      console.log('📷 Step 1: Checking browser support...');
       
+      // Check if getUserMedia is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Camera not supported in this browser');
+      }
+      
+      console.log('📷 Step 2: Requesting camera permission...');
+      // Request camera permission first
+      const testStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: "environment" } 
+      });
+      console.log('✅ Permission granted!');
+      
+      // Stop test stream
+      testStream.getTracks().forEach(track => track.stop());
+      
+      console.log('📷 Step 3: Initializing Html5Qrcode...');
       html5QrCodeScanner = new Html5Qrcode("qr-reader");
       
+      console.log('📷 Step 4: Getting camera list...');
       const devices = await Html5Qrcode.getCameras();
-      console.log('📹 Cameras found:', devices.length);
+      console.log('📹 Cameras found:', devices.length, devices);
       
       if (devices && devices.length > 0) {
         let camera = devices.find(d => 
@@ -112,18 +129,15 @@ export default function CameraCard() {
           d.label.toLowerCase().includes('rear')
         ) || devices[0];
         
-        console.log('✅ Using camera:', camera.label);
+        console.log('✅ Selected camera:', camera.label, '| ID:', camera.id);
         
         const config = {
           fps: 10,
           qrbox: { width: 250, height: 250 },
           aspectRatio: 1.0,
-          videoConstraints: {
-            facingMode: "environment",
-            width: { ideal: 640 },
-            height: { ideal: 480 }
-          }
         };
+        
+        console.log('📷 Step 5: Starting scanner...');
         
         await html5QrCodeScanner.start(
           camera.id,
@@ -138,7 +152,7 @@ export default function CameraCard() {
         );
         
         setScanning(true);
-        console.log('✅ Camera started!');
+        console.log('✅ Camera started successfully!');
         
         // Debug: Check if video element is created
         setTimeout(() => {
@@ -149,6 +163,8 @@ export default function CameraCard() {
           if (videoElement) {
             console.log('📐 Video dimensions:', videoElement.videoWidth, 'x', videoElement.videoHeight);
             console.log('🎬 Video playing:', !videoElement.paused);
+          } else {
+            console.error('❌ Video element NOT found in DOM!');
           }
         }, 1000);
       } else {
@@ -156,7 +172,8 @@ export default function CameraCard() {
       }
     } catch (err) {
       console.error('❌ Camera error:', err);
-      setError('Camera access failed: ' + err.message);
+      console.error('❌ Error details:', err.name, err.message, err.stack);
+      setError('Camera access failed: ' + (err.message || 'Unknown error'));
     }
   };
 
