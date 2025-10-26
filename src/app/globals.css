@@ -55,17 +55,26 @@ body {
 
 #qr-reader video {
   width: 100% !important;
-  height: auto !important;
+  height: 100% !important;
   display: block !important;
   object-fit: cover !important;
   border-radius: 8px;
+  aspect-ratio: 1 / 1 !important;
 }
 
 #qr-reader canvas {
   display: none !important;
 }
 
-/* Ensure html5-qrcode elements are visible */
+/* Ensure html5-qrcode elements are visible and match container */
 #qr-reader > div {
   width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+/* QR scanning box */
+#qr-reader__scan_region {
+  width: 100% !important;
+  height: 100% !important;
 }
