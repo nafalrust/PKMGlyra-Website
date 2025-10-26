@@ -118,6 +118,11 @@ export default function CameraCard() {
           fps: 10,
           qrbox: { width: 250, height: 250 },
           aspectRatio: 1.0,
+          videoConstraints: {
+            facingMode: "environment",
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+          }
         };
         
         await html5QrCodeScanner.start(
@@ -134,6 +139,18 @@ export default function CameraCard() {
         
         setScanning(true);
         console.log('✅ Camera started!');
+        
+        // Debug: Check if video element is created
+        setTimeout(() => {
+          const qrReaderDiv = document.getElementById('qr-reader');
+          const videoElement = qrReaderDiv?.querySelector('video');
+          console.log('📹 QR Reader div:', qrReaderDiv);
+          console.log('🎥 Video element:', videoElement);
+          if (videoElement) {
+            console.log('📐 Video dimensions:', videoElement.videoWidth, 'x', videoElement.videoHeight);
+            console.log('🎬 Video playing:', !videoElement.paused);
+          }
+        }, 1000);
       } else {
         throw new Error('No cameras found');
       }
@@ -187,7 +204,7 @@ export default function CameraCard() {
         </div>
       )}
 
-      <div className="mb-6">
+      <div className="mb-6 w-full">
         {!scanning && (
           <div className="w-full aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex flex-col items-center justify-center gap-4 border-2 border-dashed border-gray-300">
             <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,15 +216,19 @@ export default function CameraCard() {
           </div>
         )}
         
-        <div 
-          id="qr-reader" 
-          className={`w-full ${scanning ? 'block' : 'hidden'}`}
-          style={{ 
-            border: scanned ? '4px solid #10b981' : '4px solid #ef4444',
-            borderRadius: '12px',
-            overflow: 'hidden'
-          }}
-        />
+        {scanning && (
+          <div 
+            id="qr-reader" 
+            style={{ 
+              border: scanned ? '4px solid #10b981' : '4px solid #ef4444',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              width: '100%',
+              minHeight: '300px',
+              display: 'block'
+            }}
+          />
+        )}
       </div>
 
       {scanned && (
