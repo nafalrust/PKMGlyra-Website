@@ -3,14 +3,19 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function MedicalFormPage() {
+export default function DemografiFormPage() {
   const router = useRouter();
   const [form, setForm] = useState({
-    height: '',
-    weight: '',
-    age: '',
-    familyHistory: '',
-    eatingActivity: '',
+    sex: '', // jenis kelamin
+    age_days: '', // umur dalam hari
+    time_since_meal_min: '', // menit sejak makan terakhir
+    family_history: '',
+    height_cm: '',
+    weight_kg: '',
+    exercise_min: '',
+    smoking_vaping: '',
+    alcohol: '',
+    sleep_hours: '',
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -23,9 +28,13 @@ export default function MedicalFormPage() {
 
   const validate = () => {
     const err = {};
-    if (!form.height || Number.isNaN(Number(form.height))) err.height = 'Masukkan tinggi dalam cm';
-    if (!form.weight || Number.isNaN(Number(form.weight))) err.weight = 'Masukkan berat dalam kg';
-    if (!form.age || Number.isNaN(Number(form.age))) err.age = 'Masukkan usia';
+    if (!form.sex) err.sex = 'Pilih jenis kelamin';
+    if (!form.age_days || Number.isNaN(Number(form.age_days))) err.age_days = 'Masukkan umur dalam hari (angka)';
+    if (!form.time_since_meal_min || Number.isNaN(Number(form.time_since_meal_min))) err.time_since_meal_min = 'Masukkan menit sejak makan terakhir (angka)';
+    if (!form.height_cm || Number.isNaN(Number(form.height_cm))) err.height_cm = 'Masukkan tinggi badan dalam cm';
+    if (!form.weight_kg || Number.isNaN(Number(form.weight_kg))) err.weight_kg = 'Masukkan berat badan dalam kg';
+    if (form.exercise_min && Number.isNaN(Number(form.exercise_min))) err.exercise_min = 'Masukkan menit aktivitas (angka)';
+    if (form.sleep_hours && Number.isNaN(Number(form.sleep_hours))) err.sleep_hours = 'Masukkan jam tidur per hari (angka)';
     return err;
   };
 
@@ -38,13 +47,13 @@ export default function MedicalFormPage() {
     }
     setSubmitting(true);
 
-    // TODO: replace with API call
-    console.log('Form submitted', form);
+    // TODO: kirim data ke API
+    console.log('Demografi submitted', form);
 
     setTimeout(() => {
       setSubmitting(false);
       router.push('/');
-    }, 600);
+    }, 800);
   };
 
   return (
@@ -55,63 +64,36 @@ export default function MedicalFormPage() {
             <div className="hidden sm:block sm:w-2/12 bg-red-200" />
             <div className="w-full sm:w-10/12 p-6 sm:p-8">
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 text-center sm:text-left">Form Medis</h1>
-              <p className="text-sm text-gray-500 mb-4 text-center sm:text-left">Isi data berikut sebelum melanjutkan pemeriksaan.</p>
+              <p className="text-sm text-gray-500 mb-4 text-center sm:text-left">Isi data demografi berikut. Isian ini membantu analisis dan pemrosesan hasil.</p>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Tinggi Badan (cm)</label>
-                  <input
-                    name="height"
-                    value={form.height}
-                    onChange={handleChange}
-                    inputMode="numeric"
-                    className={`w-full rounded-lg bg-gray-100 px-3 py-3 sm:px-4 sm:py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${
-                      errors.height ? 'border-2 border-red-300' : 'border border-transparent'
-                    }`}
-                    placeholder="Contoh: 170"
-                  />
-                  {errors.height && <p className="text-xs text-red-600 mt-1">{errors.height}</p>}
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="sm:col-span-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Jenis Kelamin</label>
+                  <select name="sex" value={form.sex} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
+                    <option value="">Pilih</option>
+                    <option value="male">Laki-laki</option>
+                    <option value="female">Perempuan</option>
+                    <option value="other">Lainnya</option>
+                  </select>
+                  {errors.sex && <p className="text-xs text-red-600 mt-1">{errors.sex}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Berat Badan (kg)</label>
-                  <input
-                    name="weight"
-                    value={form.weight}
-                    onChange={handleChange}
-                    inputMode="numeric"
-                    className={`w-full rounded-lg bg-gray-100 px-3 py-3 sm:px-4 sm:py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${
-                      errors.weight ? 'border-2 border-red-300' : 'border border-transparent'
-                    }`}
-                    placeholder="Contoh: 68"
-                  />
-                  {errors.weight && <p className="text-xs text-red-600 mt-1">{errors.weight}</p>}
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Umur (hari)</label>
+                  <input name="age_days" value={form.age_days} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 10958" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.age_days ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                  {errors.age_days && <p className="text-xs text-red-600 mt-1">{errors.age_days}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Usia</label>
-                  <input
-                    name="age"
-                    value={form.age}
-                    onChange={handleChange}
-                    inputMode="numeric"
-                    className={`w-full rounded-lg bg-gray-100 px-3 py-3 sm:px-4 sm:py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${
-                      errors.age ? 'border-2 border-red-300' : 'border border-transparent'
-                    }`}
-                    placeholder="Contoh: 34"
-                  />
-                  {errors.age && <p className="text-xs text-red-600 mt-1">{errors.age}</p>}
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Menit sejak makan terakhir</label>
+                  <input name="time_since_meal_min" value={form.time_since_meal_min} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 120" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.time_since_meal_min ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                  {errors.time_since_meal_min && <p className="text-xs text-red-600 mt-1">{errors.time_since_meal_min}</p>}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Riwayat Diabetes Keluarga</label>
-                  <select
-                    name="familyHistory"
-                    value={form.familyHistory}
-                    onChange={handleChange}
-                    className="w-full rounded-lg bg-gray-100 px-3 py-3 sm:px-4 sm:py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent"
-                  >
-                    <option value="">Pilih jawaban</option>
+                  <select name="family_history" value={form.family_history} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
+                    <option value="">Pilih</option>
                     <option value="none">Tidak ada</option>
                     <option value="parent">Orang tua</option>
                     <option value="sibling">Saudara kandung</option>
@@ -120,28 +102,51 @@ export default function MedicalFormPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Aktivitas Makan / Pola Makan</label>
-                  <textarea
-                    name="eatingActivity"
-                    value={form.eatingActivity}
-                    onChange={handleChange}
-                    rows={3}
-                    className="w-full rounded-lg bg-gray-100 px-3 py-3 sm:px-4 sm:py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent"
-                    placeholder="Jelaskan singkat pola makan Anda (mis. sering makan manis, puasa, dsb.)"
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Tinggi (cm)</label>
+                  <input name="height_cm" value={form.height_cm} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 170" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.height_cm ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                  {errors.height_cm && <p className="text-xs text-red-600 mt-1">{errors.height_cm}</p>}
                 </div>
 
                 <div>
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full py-3 bg-black text-white rounded-lg font-semibold hover:opacity-95 disabled:opacity-60"
-                  >
-                    {submitting ? 'Mengirim...' : 'Lanjut'}
-                  </button>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Berat (kg)</label>
+                  <input name="weight_kg" value={form.weight_kg} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 68" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.weight_kg ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                  {errors.weight_kg && <p className="text-xs text-red-600 mt-1">{errors.weight_kg}</p>}
                 </div>
 
-                <p className="text-xs text-gray-400 text-center">Pastikan data yang Anda masukkan benar. Data ini akan membantu proses pemeriksaan.</p>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Menit aktivitas per hari</label>
+                  <input name="exercise_min" value={form.exercise_min} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 30" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.exercise_min ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Merokok / Vape</label>
+                  <select name="smoking_vaping" value={form.smoking_vaping} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
+                    <option value="">Pilih</option>
+                    <option value="no">Tidak</option>
+                    <option value="yes">Ya</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Konsumsi alkohol</label>
+                  <select name="alcohol" value={form.alcohol} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
+                    <option value="">Pilih</option>
+                    <option value="no">Tidak</option>
+                    <option value="yes">Ya</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Jam tidur per hari</label>
+                  <input name="sleep_hours" value={form.sleep_hours} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 7" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.sleep_hours ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                  {errors.sleep_hours && <p className="text-xs text-red-600 mt-1">{errors.sleep_hours}</p>}
+                </div>
+
+                <div className="sm:col-span-2">
+                  <button type="submit" disabled={submitting} className="w-full py-3 bg-black text-white rounded-lg font-semibold hover:opacity-95 disabled:opacity-60">{submitting ? 'Mengirim...' : 'Lanjutkan'}</button>
+                </div>
+
+                <p className="text-xs text-gray-400 sm:col-span-2">Pastikan data yang Anda masukkan benar. Data demografi membantu proses pemeriksaan dan analisis.</p>
               </form>
             </div>
           </div>
