@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Html5Qrcode } from 'html5-qrcode';
 import { getCurrentUser } from '@/lib/auth';
@@ -13,26 +13,37 @@ export default function CameraCard() {
   const [processing, setProcessing] = useState(false);
   const [scanned, setScanned] = useState(false);
 
-  let html5QrCodeScanner = null;
+  const html5QrCodeScannerRef = useRef(null);
 
   useEffect(() => {
     // Auto-start camera when component mounts
     startCamera();
     
     return () => {
+      // Cleanup: stop camera when component unmounts
       stopCameraCleanup();
     };
   }, []);
 
   const stopCameraCleanup = async () => {
     try {
-      const scanner = document.getElementById("qr-reader");
-      if (scanner && html5QrCodeScanner) {
-        if (html5QrCodeScanner.isScanning) {
-          await html5QrCodeScanner.stop();
+      console.log('🧹 Cleaning up camera...');
+      if (html5QrCodeScannerRef.current) {
+        const scanner = html5QrCodeScannerRef.current;
+        if (scanner.isScanning) {
+          await scanner.stop();
+          console.log('✅ Camera stopped');
         }
-        html5QrCodeScanner.clear();
+        scanner.clear();
+        html5QrCodeScannerRef.current = null;
       }
+      
+      // Also stop all media streams
+      const streams = await navigator.mediaDevices.getUserMedia({ video: true });
+      streams.getTracks().forEach(track => {
+        track.stop();
+        console.log('✅ Media track stopped');
+      });
     } catch (err) {
       console.log('Cleanup error:', err);
     }
@@ -120,7 +131,7 @@ export default function CameraCard() {
       testStream.getTracks().forEach(track => track.stop());
       
       console.log('📷 Step 3: Initializing Html5Qrcode...');
-      html5QrCodeScanner = new Html5Qrcode("qr-reader");
+      html5QrCodeScannerRef.current = new Html5Qrcode("qr-reader");
       
       console.log('📷 Step 4: Getting camera list...');
       const devices = await Html5Qrcode.getCameras();
@@ -142,7 +153,7 @@ export default function CameraCard() {
         
         console.log('📷 Step 5: Starting scanner...');
         
-        await html5QrCodeScanner.start(
+        await html5QrCodeScannerRef.current.start(
           camera.id,
           config,
           (decodedText, decodedResult) => {
@@ -182,8 +193,8 @@ export default function CameraCard() {
 
   const stopCamera = async () => {
     try {
-      if (html5QrCodeScanner && html5QrCodeScanner.isScanning) {
-        await html5QrCodeScanner.stop();
+      if (html5QrCodeScannerRef.current && html5QrCodeScannerRef.current.isScanning) {
+        await html5QrCodeScannerRef.current.stop();
         console.log('📷 Camera stopped');
       }
       setScanning(false);
@@ -194,10 +205,15 @@ export default function CameraCard() {
 
   const handleCancel = async () => {
     await stopCamera();
+    // Also cleanup
+    await stopCameraCleanup();
     router.push('/dashboard');
   };
 
-  const handleManualEntry = () => {
+  const handleManualEntry = async () => {
+    await stopCamera();
+    // Also cleanup
+    await stopCameraCleanup();
     // TODO: Implement manual QR code entry
     router.push('/dashboard'); // For now, just go back
   };
