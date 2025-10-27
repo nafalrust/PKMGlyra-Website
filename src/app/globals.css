@@ -47,3 +47,34 @@ body {
 .animate-scan-line {
   animation: scan-line 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
+
+/* QR Code Scanner Video Styles */
+#qr-reader {
+  position: relative !important;
+}
+
+#qr-reader video {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  border-radius: 8px;
+  aspect-ratio: 1 / 1 !important;
+}
+
+#qr-reader canvas {
+  display: none !important;
+}
+
+/* Ensure html5-qrcode elements are visible and match container */
+#qr-reader > div {
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+/* QR scanning box */
+#qr-reader__scan_region {
+  width: 100% !important;
+  height: 100% !important;
+}
