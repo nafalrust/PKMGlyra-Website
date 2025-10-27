@@ -16,6 +16,9 @@ export default function CameraCard() {
   let html5QrCodeScanner = null;
 
   useEffect(() => {
+    // Auto-start camera when component mounts
+    startCamera();
+    
     return () => {
       stopCameraCleanup();
     };
@@ -194,16 +197,17 @@ export default function CameraCard() {
     router.push('/dashboard');
   };
 
+  const handleManualEntry = () => {
+    // TODO: Implement manual QR code entry
+    router.push('/dashboard'); // For now, just go back
+  };
+
   return (
     <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg p-6 mx-auto">
       <h1 className="text-2xl font-bold mb-3 text-center">Scan QR Code</h1>
       
-      <p className="text-gray-600 text-sm mb-1 text-center">
+      <p className="text-gray-600 text-sm mb-4 text-center">
         Position QR code in the square frame
-      </p>
-      
-      <p className="text-green-600 text-xs mb-4 text-center font-semibold">
-        ✅ Using html5-qrcode - TESTED & WORKING!
       </p>
 
       {error && (
@@ -221,44 +225,20 @@ export default function CameraCard() {
         </div>
       )}
 
-      <div className="w-full relative" style={{ minHeight: scanning ? 'auto' : '0' }}>
-        {/* Placeholder - shown when NOT scanning */}
-        <div 
-          className="w-full rounded-lg flex flex-col items-center justify-center gap-3 border-2 border-dashed border-gray-300 bg-gradient-to-br from-gray-100 to-gray-200 p-6"
-          style={{ 
-            display: scanning ? 'none' : 'flex',
-            aspectRatio: '1 / 1',
-            maxWidth: '100%',
-            margin: '0 auto'
-          }}
-        >
-          <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          <p className="text-gray-500 text-sm font-medium">Camera preview</p>
-          <p className="text-gray-400 text-xs">Click button below to start</p>
-        </div>
-        
-        {/* QR Reader - ALWAYS in DOM */}
-        <div 
-          id="qr-reader" 
-          style={{ 
-            border: scanned ? '4px solid #10b981' : '4px solid #ef4444',
-            borderRadius: '12px',
-            overflow: 'visible',
-            width: '100%',
-            maxWidth: '100%',
-            margin: '0 auto',
-            aspectRatio: '1 / 1',
-            visibility: scanning ? 'visible' : 'hidden',
-            position: scanning ? 'relative' : 'absolute',
-            top: 0,
-            left: 0,
-            right: 0
-          }}
-        />
-      </div>
+      {/* QR Reader - ALWAYS in DOM, camera auto-starts */}
+      <div 
+        id="qr-reader" 
+        className="mb-3"
+        style={{ 
+          border: scanned ? '4px solid #10b981' : '4px solid #ef4444',
+          borderRadius: '12px',
+          overflow: 'visible',
+          width: '100%',
+          maxWidth: '100%',
+          margin: '0 auto 12px auto',
+          aspectRatio: '1 / 1'
+        }}
+      />
 
       {scanned && (
         <div className="mb-3 flex justify-center">
@@ -271,23 +251,13 @@ export default function CameraCard() {
       )}
 
       <div className="flex flex-col gap-3">
-        {!scanning ? (
-          <button
-            onClick={startCamera}
-            disabled={processing}
-            className="w-full py-3 bg-red-400 hover:bg-red-500 disabled:bg-gray-300 text-white rounded-lg text-base font-semibold transition-colors"
-          >
-            {processing ? '⏳ Processing...' : '📷 Start Camera'}
-          </button>
-        ) : (
-          <button
-            onClick={stopCamera}
-            disabled={processing}
-            className="w-full py-3 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-300 text-white rounded-lg text-base font-semibold transition-colors"
-          >
-            ⏹️ Stop Camera
-          </button>
-        )}
+        <button
+          onClick={handleManualEntry}
+          disabled={processing}
+          className="w-full py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded-lg text-base font-semibold transition-colors"
+        >
+          ✍️ Manual Enter Code
+        </button>
         
         <button
           onClick={handleCancel}
