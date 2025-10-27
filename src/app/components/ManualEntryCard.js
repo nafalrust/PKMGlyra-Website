@@ -12,11 +12,11 @@ export default function ManualEntryCard() {
   const [processing, setProcessing] = useState(false);
 
   const handleInputChange = (index, value) => {
-    // Only allow numbers
-    if (value && !/^\d$/.test(value)) return;
+    // Allow alphanumeric (letters and numbers)
+    if (value && !/^[a-zA-Z0-9]$/.test(value)) return;
 
     const newCode = [...code];
-    newCode[index] = value;
+    newCode[index] = value.toUpperCase(); // Convert to uppercase for consistency
     setCode(newCode);
 
     // Auto-focus next input
@@ -36,10 +36,10 @@ export default function ManualEntryCard() {
 
   const handlePaste = (e) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').trim();
+    const pastedData = e.clipboardData.getData('text').trim().toUpperCase();
     
-    // Only accept 6 digits
-    if (/^\d{6}$/.test(pastedData)) {
+    // Accept 6 alphanumeric characters
+    if (/^[A-Z0-9]{6}$/i.test(pastedData)) {
       const newCode = pastedData.split('');
       setCode(newCode);
       
@@ -124,21 +124,21 @@ export default function ManualEntryCard() {
         </div>
       )}
 
-      {/* 6-digit code input */}
+      {/* 6-character code input */}
       <div className="mb-4 flex justify-center gap-2">
         {code.map((digit, index) => (
           <input
             key={index}
             id={`code-${index}`}
             type="text"
-            inputMode="numeric"
+            inputMode="text"
             maxLength={1}
             value={digit}
             onChange={(e) => handleInputChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
             onPaste={index === 0 ? handlePaste : undefined}
             disabled={processing}
-            className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none disabled:bg-gray-100"
+            className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none disabled:bg-gray-100 uppercase"
           />
         ))}
       </div>
@@ -163,7 +163,7 @@ export default function ManualEntryCard() {
 
       <div className="mt-4 text-center space-y-1">
         <p className="text-xs text-gray-500">
-          Code format: 6 digits (example: 123456)
+          Code format: 6 characters (letters or numbers)
         </p>
         <p className="text-xs text-gray-400">
           You can paste the code directly
