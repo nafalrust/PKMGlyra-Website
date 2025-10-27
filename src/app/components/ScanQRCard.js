@@ -28,7 +28,8 @@ export default function QrScanner() {
 
         await html5QrCode.start(
           cameraId,
-          { fps: 5, qrbox: { width: 250, height: 250 } },
+          { fps: 5, 
+            qrbox: { width: 500, height: 500, aspectRatio: 1.0 } },
           (decodedText) => {
             setResult(decodedText);
             setScanCount((c) => c + 1);
@@ -79,7 +80,7 @@ export default function QrScanner() {
         Position the QR code within the camera frame
       </p>
 
-      <div className="w-full bg-gray-100 rounded-xl h-64 flex items-center justify-center mb-4 overflow-hidden">
+      <div className="w-[100%] bg-gray-100 rounded-xl flex items-center justify-center mb-4 overflow-hidden">
         {/* camera reader target */}
         <div
           id="reader"
@@ -90,7 +91,7 @@ export default function QrScanner() {
         {!scanning && (
           <div className="flex flex-col items-center justify-center text-center">
             <svg
-              className="w-20 h-20 text-gray-400 mb-2"
+              className="w-20 h-48 text-gray-400 mb-2"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -106,9 +107,6 @@ export default function QrScanner() {
               />
               <circle cx="12" cy="13" r="3" strokeWidth="1.5" />
             </svg>
-            <p className="text-sm text-gray-500">
-              Scanner will automatically detect QR code every 0.3 seconds
-            </p>
           </div>
         )}
       </div>
