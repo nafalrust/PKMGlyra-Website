@@ -171,7 +171,7 @@ export default function CameraCard() {
   const handleManualEntry = async () => {
     await stopCamera();
     await stopCameraCleanup();
-    router.push('/dashboard');
+    router.push('/manual-entry');
   };
 
   return (
