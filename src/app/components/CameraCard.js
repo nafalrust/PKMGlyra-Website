@@ -27,32 +27,25 @@ export default function CameraCard() {
 
   const stopCameraCleanup = async () => {
     try {
-      console.log('🧹 Cleaning up camera...');
       if (html5QrCodeScannerRef.current) {
         const scanner = html5QrCodeScannerRef.current;
         if (scanner.isScanning) {
           await scanner.stop();
-          console.log('✅ Camera stopped');
         }
         scanner.clear();
         html5QrCodeScannerRef.current = null;
       }
       
-      // Also stop all media streams
+      // Stop all media streams
       const streams = await navigator.mediaDevices.getUserMedia({ video: true });
-      streams.getTracks().forEach(track => {
-        track.stop();
-        console.log('✅ Media track stopped');
-      });
+      streams.getTracks().forEach(track => track.stop());
     } catch (err) {
-      console.log('Cleanup error:', err);
+      // Ignore cleanup errors
     }
   };
 
   const handleQRCodeSuccess = async (decodedText) => {
     if (processing) return;
-    
-    console.log('✅✅✅ QR Code DETECTED:', decodedText);
     
     setProcessing(true);
     setScanned(true);
@@ -63,7 +56,7 @@ export default function CameraCard() {
     
     try {
       setError('');
-      setSuccess('✓ QR Code Detected!');
+      setSuccess('QR Code Detected!');
       
       await stopCamera();
       
@@ -91,7 +84,7 @@ export default function CameraCard() {
       const data = await response.json();
 
       if (data.success) {
-        setSuccess('✓ QR Code Saved Successfully!');
+        setSuccess('QR Code Saved Successfully!');
         setTimeout(() => {
           router.push('/dashboard');
         }, 1500);
@@ -99,7 +92,6 @@ export default function CameraCard() {
         throw new Error(data.message || 'Failed to save QR code');
       }
     } catch (err) {
-      console.error('❌ Error:', err);
       setError(err.message || 'Failed to save QR code');
       setScanned(false);
       setProcessing(false);
@@ -113,29 +105,19 @@ export default function CameraCard() {
       setProcessing(false);
       setScanned(false);
       
-      console.log('📷 Step 1: Checking browser support...');
-      
-      // Check if getUserMedia is supported
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error('Camera not supported in this browser');
       }
       
-      console.log('📷 Step 2: Requesting camera permission...');
-      // Request camera permission first
       const testStream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: "environment" } 
       });
-      console.log('✅ Permission granted!');
       
-      // Stop test stream
       testStream.getTracks().forEach(track => track.stop());
       
-      console.log('📷 Step 3: Initializing Html5Qrcode...');
       html5QrCodeScannerRef.current = new Html5Qrcode("qr-reader");
       
-      console.log('📷 Step 4: Getting camera list...');
       const devices = await Html5Qrcode.getCameras();
-      console.log('📹 Cameras found:', devices.length, devices);
       
       if (devices && devices.length > 0) {
         let camera = devices.find(d => 
@@ -143,50 +125,28 @@ export default function CameraCard() {
           d.label.toLowerCase().includes('rear')
         ) || devices[0];
         
-        console.log('✅ Selected camera:', camera.label, '| ID:', camera.id);
-        
         const config = {
           fps: 10,
           qrbox: { width: 250, height: 250 },
           aspectRatio: 1.0,
         };
         
-        console.log('📷 Step 5: Starting scanner...');
-        
         await html5QrCodeScannerRef.current.start(
           camera.id,
           config,
-          (decodedText, decodedResult) => {
-            console.log('🎯 SCAN SUCCESS!', decodedText);
+          (decodedText) => {
             handleQRCodeSuccess(decodedText);
           },
-          (errorMessage) => {
-            // Normal - no QR in frame
+          () => {
+            // No QR in frame
           }
         );
         
         setScanning(true);
-        console.log('✅ Camera started successfully!');
-        
-        // Debug: Check if video element is created
-        setTimeout(() => {
-          const qrReaderDiv = document.getElementById('qr-reader');
-          const videoElement = qrReaderDiv?.querySelector('video');
-          console.log('📹 QR Reader div:', qrReaderDiv);
-          console.log('🎥 Video element:', videoElement);
-          if (videoElement) {
-            console.log('📐 Video dimensions:', videoElement.videoWidth, 'x', videoElement.videoHeight);
-            console.log('🎬 Video playing:', !videoElement.paused);
-          } else {
-            console.error('❌ Video element NOT found in DOM!');
-          }
-        }, 1000);
       } else {
         throw new Error('No cameras found');
       }
     } catch (err) {
-      console.error('❌ Camera error:', err);
-      console.error('❌ Error details:', err.name, err.message, err.stack);
       setError('Camera access failed: ' + (err.message || 'Unknown error'));
     }
   };
@@ -195,27 +155,23 @@ export default function CameraCard() {
     try {
       if (html5QrCodeScannerRef.current && html5QrCodeScannerRef.current.isScanning) {
         await html5QrCodeScannerRef.current.stop();
-        console.log('📷 Camera stopped');
       }
       setScanning(false);
     } catch (err) {
-      console.error('Stop camera error:', err);
+      // Ignore stop errors
     }
   };
 
   const handleCancel = async () => {
     await stopCamera();
-    // Also cleanup
     await stopCameraCleanup();
     router.push('/dashboard');
   };
 
   const handleManualEntry = async () => {
     await stopCamera();
-    // Also cleanup
     await stopCameraCleanup();
-    // TODO: Implement manual QR code entry
-    router.push('/dashboard'); // For now, just go back
+    router.push('/dashboard');
   };
 
   return (
@@ -272,7 +228,7 @@ export default function CameraCard() {
           disabled={processing}
           className="w-full py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded-lg text-base font-semibold transition-colors"
         >
-          ✍️ Manual Enter Code
+          Manual Enter Code
         </button>
         
         <button
@@ -286,10 +242,10 @@ export default function CameraCard() {
 
       <div className="mt-4 text-center space-y-1">
         <p className="text-xs text-gray-500">
-          💡 Tip: Hold QR code steady, 20-30cm from camera
+          Tip: Hold QR code steady, 20-30cm from camera
         </p>
         <p className="text-xs text-gray-400">
-          ☀️ Make sure lighting is good
+          Make sure lighting is good
         </p>
       </div>
     </div>
