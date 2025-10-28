@@ -3,22 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function MedicalForm() {
+export default function MedicalForm({form, setForm, errors, setErrors, submitting, setSubmitting}) {
   const router = useRouter();
-  const [form, setForm] = useState({
-    sex: '', 
-    age: '', 
-    time_since_meal_min: '',
-    family_history: '',
-    height_cm: '',
-    weight_kg: '',
-    exercise_min: '',
-    smoking_vaping: '',
-    alcohol: '',
-    sleep_hours: '',
-  });
-  const [errors, setErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,10 +36,10 @@ export default function MedicalForm() {
     // TODO: kirim data ke API
     console.log('Demografi submitted', form);
 
-    setTimeout(() => {
-      setSubmitting(false);
-      router.push('/');
-    }, 800);
+    // setTimeout(() => {
+    //   setSubmitting(false);
+    //   router.push('/');
+    // }, 800);
   };
 
   return (
