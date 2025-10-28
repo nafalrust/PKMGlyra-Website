@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 function Model() {
   const ref = useRef();
-  const { scene } = useGLTF('/ptype5.glb');
+  const { scene } = useGLTF('/type.glb');
 
   useEffect(() => {
     if (!ref.current) return;

@@ -5,11 +5,10 @@ import { useRouter } from 'next/navigation';
 import { Html5Qrcode } from 'html5-qrcode';
 import { getCurrentUser } from '@/lib/auth';
 
-export default function CameraCard() {
+export default function CameraCard({success, setSuccess, decodeText, setDecodeText}) {
   const router = useRouter();
   const [scanning, setScanning] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [processing, setProcessing] = useState(false);
   const [scanned, setScanned] = useState(false);
 
@@ -45,6 +44,7 @@ export default function CameraCard() {
   };
 
   const handleQRCodeSuccess = async (decodedText) => {
+    setDecodeText(decodedText);
     if (processing) return;
     
     setProcessing(true);
@@ -85,9 +85,6 @@ export default function CameraCard() {
 
       if (data.success) {
         setSuccess('QR Code Saved Successfully!');
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 1500);
       } else {
         throw new Error(data.message || 'Failed to save QR code');
       }
@@ -137,9 +134,7 @@ export default function CameraCard() {
           (decodedText) => {
             handleQRCodeSuccess(decodedText);
           },
-          () => {
-            // No QR in frame
-          }
+          () => { }
         );
         
         setScanning(true);
