@@ -4,21 +4,29 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function MedicalForm({form, setForm, errors, setErrors, submitting, setSubmitting}) {
+  // Provide default values if props are undefined
+  const safeForm = form || {};
+  const safeSetForm = setForm || (() => {});
+  const safeErrors = errors || {};
+  const safeSetErrors = setErrors || (() => {});
+  const safeSubmitting = submitting || false;
+  const safeSetSubmitting = setSubmitting || (() => {});
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((s) => ({ ...s, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: null }));
+    safeSetForm((s) => ({ ...s, [name]: value }));
+    safeSetErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   const validate = () => {
     const err = {};
-    if (!form.sex) err.sex = 'Pilih jenis kelamin';
-    if (!form.age || Number.isNaN(Number(form.age))) err.age = 'Masukkan umur dalam tahun (angka)';
-    if (!form.time_since_meal_min || Number.isNaN(Number(form.time_since_meal_min))) err.time_since_meal_min = 'Masukkan menit sejak makan terakhir (angka)';
-    if (!form.height_cm || Number.isNaN(Number(form.height_cm))) err.height_cm = 'Masukkan tinggi badan dalam cm';
-    if (!form.weight_kg || Number.isNaN(Number(form.weight_kg))) err.weight_kg = 'Masukkan berat badan dalam kg';
-    if (form.exercise_min && Number.isNaN(Number(form.exercise_min))) err.exercise_min = 'Masukkan menit aktivitas (angka)';
-    if (form.sleep_hours && Number.isNaN(Number(form.sleep_hours))) err.sleep_hours = 'Masukkan jam tidur per hari (angka)';
+    if (!safeForm.sex) err.sex = 'Pilih jenis kelamin';
+    if (!safeForm.age || Number.isNaN(Number(safeForm.age))) err.age = 'Masukkan umur dalam tahun (angka)';
+    if (!safeForm.time_since_meal_min || Number.isNaN(Number(safeForm.time_since_meal_min))) err.time_since_meal_min = 'Masukkan menit sejak makan terakhir (angka)';
+    if (!safeForm.height_cm || Number.isNaN(Number(safeForm.height_cm))) err.height_cm = 'Masukkan tinggi badan dalam cm';
+    if (!safeForm.weight_kg || Number.isNaN(Number(safeForm.weight_kg))) err.weight_kg = 'Masukkan berat badan dalam kg';
+    if (safeForm.exercise_min && Number.isNaN(Number(safeForm.exercise_min))) err.exercise_min = 'Masukkan menit aktivitas (angka)';
+    if (safeForm.sleep_hours && Number.isNaN(Number(safeForm.sleep_hours))) err.sleep_hours = 'Masukkan jam tidur per hari (angka)';
     return err;
   };
 
@@ -26,10 +34,10 @@ export default function MedicalForm({form, setForm, errors, setErrors, submittin
     e.preventDefault();
     const v = validate();
     if (Object.keys(v).length) {
-      setErrors(v);
+      safeSetErrors(v);
       return;
     }
-    setSubmitting(true);
+    safeSetSubmitting(true);
   };
 
   return (
@@ -44,30 +52,30 @@ export default function MedicalForm({form, setForm, errors, setErrors, submittin
               <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-1">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Jenis Kelamin</label>
-                  <select name="sex" value={form.sex} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
+                  <select name="sex" value={safeForm.sex || ''} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
                     <option value="">Pilih</option>
                     <option value="male">Laki-laki</option>
                     <option value="female">Perempuan</option>
                     <option value="other">Lainnya</option>
                   </select>
-                  {errors.sex && <p className="text-xs text-red-600 mt-1">{errors.sex}</p>}
+                  {safeErrors.sex && <p className="text-xs text-red-600 mt-1">{safeErrors.sex}</p>}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Umur (hari)</label>
-                  <input name="age" value={form.age} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 21" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.age ? 'border-2 border-red-300' : 'border border-transparent'}`} />
-                  {errors.age && <p className="text-xs text-red-600 mt-1">{errors.age}</p>}
+                  <input name="age" value={safeForm.age || ''} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 21" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${safeErrors.age ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                  {safeErrors.age && <p className="text-xs text-red-600 mt-1">{safeErrors.age}</p>}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Menit sejak makan terakhir</label>
-                  <input name="time_since_meal_min" value={form.time_since_meal_min} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 120" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.time_since_meal_min ? 'border-2 border-red-300' : 'border border-transparent'}`} />
-                  {errors.time_since_meal_min && <p className="text-xs text-red-600 mt-1">{errors.time_since_meal_min}</p>}
+                  <input name="time_since_meal_min" value={safeForm.time_since_meal_min || ''} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 120" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${safeErrors.time_since_meal_min ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                  {safeErrors.time_since_meal_min && <p className="text-xs text-red-600 mt-1">{safeErrors.time_since_meal_min}</p>}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Riwayat Diabetes Keluarga</label>
-                  <select name="family_history" value={form.family_history} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
+                  <select name="family_history" value={safeForm.family_history || ''} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
                     <option value="">Pilih</option>
                     <option value="none">Tidak ada</option>
                     <option value="parent">Orang tua</option>
@@ -78,24 +86,24 @@ export default function MedicalForm({form, setForm, errors, setErrors, submittin
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Tinggi (cm)</label>
-                  <input name="height_cm" value={form.height_cm} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 170" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.height_cm ? 'border-2 border-red-300' : 'border border-transparent'}`} />
-                  {errors.height_cm && <p className="text-xs text-red-600 mt-1">{errors.height_cm}</p>}
+                  <input name="height_cm" value={safeForm.height_cm || ''} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 170" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${safeErrors.height_cm ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                  {safeErrors.height_cm && <p className="text-xs text-red-600 mt-1">{safeErrors.height_cm}</p>}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Berat (kg)</label>
-                  <input name="weight_kg" value={form.weight_kg} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 68" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.weight_kg ? 'border-2 border-red-300' : 'border border-transparent'}`} />
-                  {errors.weight_kg && <p className="text-xs text-red-600 mt-1">{errors.weight_kg}</p>}
+                  <input name="weight_kg" value={safeForm.weight_kg || ''} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 68" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${safeErrors.weight_kg ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                  {safeErrors.weight_kg && <p className="text-xs text-red-600 mt-1">{safeErrors.weight_kg}</p>}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Menit aktivitas per hari</label>
-                  <input name="exercise_min" value={form.exercise_min} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 30" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.exercise_min ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                  <input name="exercise_min" value={safeForm.exercise_min || ''} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 30" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${safeErrors.exercise_min ? 'border-2 border-red-300' : 'border border-transparent'}`} />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Merokok / Vape</label>
-                  <select name="smoking_vaping" value={form.smoking_vaping} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
+                  <select name="smoking_vaping" value={safeForm.smoking_vaping || ''} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
                     <option value="">Pilih</option>
                     <option value="no">Tidak</option>
                     <option value="yes">Ya</option>
@@ -104,7 +112,7 @@ export default function MedicalForm({form, setForm, errors, setErrors, submittin
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Konsumsi alkohol</label>
-                  <select name="alcohol" value={form.alcohol} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
+                  <select name="alcohol" value={safeForm.alcohol || ''} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
                     <option value="">Pilih</option>
                     <option value="no">Tidak</option>
                     <option value="yes">Ya</option>
@@ -113,12 +121,12 @@ export default function MedicalForm({form, setForm, errors, setErrors, submittin
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Jam tidur per hari</label>
-                  <input name="sleep_hours" value={form.sleep_hours} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 7" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${errors.sleep_hours ? 'border-2 border-red-300' : 'border border-transparent'}`} />
-                  {errors.sleep_hours && <p className="text-xs text-red-600 mt-1">{errors.sleep_hours}</p>}
+                  <input name="sleep_hours" value={safeForm.sleep_hours || ''} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 7" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${safeErrors.sleep_hours ? 'border-2 border-red-300' : 'border border-transparent'}`} />
+                  {safeErrors.sleep_hours && <p className="text-xs text-red-600 mt-1">{safeErrors.sleep_hours}</p>}
                 </div>
 
                 <div className="sm:col-span-2">
-                  <button type="submit" disabled={submitting} className="w-full py-3 bg-black text-white rounded-lg font-semibold hover:opacity-95 disabled:opacity-60">{submitting ? 'Mengirim...' : 'Lanjutkan'}</button>
+                  <button type="submit" disabled={safeSubmitting} className="w-full py-3 bg-black text-white rounded-lg font-semibold hover:opacity-95 disabled:opacity-60">{safeSubmitting ? 'Mengirim...' : 'Lanjutkan'}</button>
                 </div>
 
                 <p className="text-xs text-gray-400 sm:col-span-2">Pastikan data yang Anda masukkan benar. Data demografi membantu proses pemeriksaan dan analisis.</p>

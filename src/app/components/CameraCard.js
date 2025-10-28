@@ -23,6 +23,7 @@ export default function CameraCard() {
       // Cleanup: stop camera when component unmounts
       stopCameraCleanup();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const stopCameraCleanup = async () => {
