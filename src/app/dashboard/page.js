@@ -46,7 +46,7 @@ export default function Dashboard() {
 
   const handleStartExamination = () => {
     // Navigate to QR scan page
-    router.push('/scan-qr');
+    router.push('/medical-test');
   };
 
   const handleLogout = async () => {
