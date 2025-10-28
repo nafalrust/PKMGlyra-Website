@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function MedicalForm({form, setForm, errors, setErrors, submitting, setSubmitting}) {
-  const router = useRouter();
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((s) => ({ ...s, [name]: value }));
@@ -32,18 +30,10 @@ export default function MedicalForm({form, setForm, errors, setErrors, submittin
       return;
     }
     setSubmitting(true);
-
-    // TODO: kirim data ke API
-    console.log('Demografi submitted', form);
-
-    // setTimeout(() => {
-    //   setSubmitting(false);
-    //   router.push('/');
-    // }, 800);
   };
 
   return (
-      <div className="w-full max-w-xl sm:max-w-2xl px-2">
+      <div className="w-full max-w-xl sm:max-w-2xl px-2 mt-24">
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           <div className="flex flex-col sm:flex-row">
             <div className="hidden sm:block sm:w-2/12 bg-red-200" />
