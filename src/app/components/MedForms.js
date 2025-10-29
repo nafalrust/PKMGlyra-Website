@@ -20,8 +20,6 @@ export default function MedicalForm({form, setForm, errors, setErrors, submittin
 
   const validate = () => {
     const err = {};
-    if (!safeForm.sex) err.sex = 'Pilih jenis kelamin';
-    if (!safeForm.age || Number.isNaN(Number(safeForm.age))) err.age = 'Masukkan umur dalam tahun (angka)';
     if (!safeForm.time_since_meal_min || Number.isNaN(Number(safeForm.time_since_meal_min))) err.time_since_meal_min = 'Masukkan menit sejak makan terakhir (angka)';
     if (!safeForm.height_cm || Number.isNaN(Number(safeForm.height_cm))) err.height_cm = 'Masukkan tinggi badan dalam cm';
     if (!safeForm.weight_kg || Number.isNaN(Number(safeForm.weight_kg))) err.weight_kg = 'Masukkan berat badan dalam kg';
@@ -50,23 +48,6 @@ export default function MedicalForm({form, setForm, errors, setErrors, submittin
               <p className="text-sm text-gray-500 mb-4 text-center sm:text-left">Isi data demografi berikut. Isian ini membantu analisis dan pemrosesan hasil.</p>
 
               <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="sm:col-span-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Jenis Kelamin</label>
-                  <select name="sex" value={safeForm.sex || ''} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
-                    <option value="">Pilih</option>
-                    <option value="male">Laki-laki</option>
-                    <option value="female">Perempuan</option>
-                    <option value="other">Lainnya</option>
-                  </select>
-                  {safeErrors.sex && <p className="text-xs text-red-600 mt-1">{safeErrors.sex}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Umur (hari)</label>
-                  <input name="age" value={safeForm.age || ''} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 21" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${safeErrors.age ? 'border-2 border-red-300' : 'border border-transparent'}`} />
-                  {safeErrors.age && <p className="text-xs text-red-600 mt-1">{safeErrors.age}</p>}
-                </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Menit sejak makan terakhir</label>
                   <input name="time_since_meal_min" value={safeForm.time_since_meal_min || ''} onChange={handleChange} inputMode="numeric" placeholder="Contoh: 120" className={`w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 ${safeErrors.time_since_meal_min ? 'border-2 border-red-300' : 'border border-transparent'}`} />
