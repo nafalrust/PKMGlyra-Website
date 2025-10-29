@@ -6,7 +6,7 @@ import CameraCard from "../components/CameraCard";
 import HasilKartu from "../components/TestResultCard";
 import { useRouter } from "next/navigation";
 import { getCurrentUser, onAuthStateChange, logout } from '@/lib/auth';
-
+import { useFirebaseReadings } from '../components/GetData';
 
 export default function MedicalTest() {
   const [form, setForm] = useState({
@@ -21,17 +21,7 @@ export default function MedicalTest() {
     alcohol: '',
     sleep_hours: '',
   });
-
-  const [signal, setSignal] = useState({
-    mics5524: [0.3892],
-    mq135: [1.0726],
-    mq138: [0.49158],
-    pressure: [997.96185],
-    temperature: [34.4],
-    tgs2602: [0.84938],
-    tgs822: [0.49883]
-  });
-
+  
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -43,9 +33,11 @@ export default function MedicalTest() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const isLoggingOutRef = useRef(false);
-
+  
+  const { data, loadData, errorMsg } = useFirebaseReadings(decodeText);
+  
   const handleSendData = async () => {
-    const payload = { ...form, ...signal };
+    const payload = { ...form, ...data };
     try {
       const response = await fetch('http://localhost:5000/api/medical-test/submit', {
         method: 'POST',
