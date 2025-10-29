@@ -10,8 +10,6 @@ import { useFirebaseReadings } from '../components/GetData';
 
 export default function MedicalTest() {
   const [form, setForm] = useState({
-    sex: '', 
-    age: '', 
     time_since_meal_min: '',
     family_history: '',
     height_cm: '',
@@ -39,14 +37,15 @@ export default function MedicalTest() {
   const handleSendData = async () => {
     const payload = { ...form, ...data };
     try {
-      const response = await fetch('http://localhost:5000/api/medical-test/submit', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/medical-test/submit`, {
+      // const response = await fetch('http://localhost:5000/api/medical-test/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       const result = await response.json();
       console.log('Data submitted successfully:', result);
-      setApiResult(result); // simpan hasil untuk ditampilkan
+      setApiResult(result);
     } catch (error) {
       console.error('Error submitting data:', error);
       setApiResult({ error: 'Gagal submit data' });
