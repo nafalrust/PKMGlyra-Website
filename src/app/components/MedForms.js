@@ -58,10 +58,8 @@ export default function MedicalForm({form, setForm, errors, setErrors, submittin
                   <label className="block text-sm font-medium text-gray-700 mb-2">Riwayat Diabetes Keluarga</label>
                   <select name="family_history" value={safeForm.family_history || ''} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
                     <option value="">Pilih</option>
-                    <option value="none">Tidak ada</option>
-                    <option value="parent">Orang tua</option>
-                    <option value="sibling">Saudara kandung</option>
-                    <option value="other">Lainnya</option>
+                    <option value="yes">Ya</option>
+                    <option value="no">Tidak ada</option>
                   </select>
                 </div>
 
@@ -86,8 +84,8 @@ export default function MedicalForm({form, setForm, errors, setErrors, submittin
                   <label className="block text-sm font-medium text-gray-700 mb-2">Merokok / Vape</label>
                   <select name="smoking_vaping" value={safeForm.smoking_vaping || ''} onChange={handleChange} className="w-full rounded-lg bg-gray-100 px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-300 border border-transparent">
                     <option value="">Pilih</option>
-                    <option value="no">Tidak</option>
                     <option value="yes">Ya</option>
+                    <option value="no">Tidak</option>
                   </select>
                 </div>
 

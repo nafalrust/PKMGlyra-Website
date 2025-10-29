@@ -105,10 +105,14 @@ export default function Dashboard() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-6 md:mt-8 justify-center items-center lg:justify-start" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="300">
                 <button
-                  className="flex justify-center items-center w-56 md:w-64 h-14 md:h-16 bg-red-400 rounded-lg hover:bg-red-500 transition-colors duration-300"
                   onClick={handleStartExamination}
+                  className="relative group px-8 py-4 md:px-12 md:py-6 rounded-2xl text-white text-xl md:text-2xl font-bold 
+                            bg-gradient-to-r from-red-500 to-pink-500 
+                            shadow-lg shadow-rose-400/40 hover:shadow-rose-500/50 
+                            transition-all duration-300 overflow-hidden"
                 >
-                  <h1 className="text-white text-xl md:text-2xl font-bold">START EXAMINATION</h1>
+                  <span className="relative z-10">Start Examination</span>
+                  <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-30 transition duration-300 rounded-2xl"></span>
                 </button>
               </div>
             </div>

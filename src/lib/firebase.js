@@ -1,6 +1,7 @@
 // Firebase configuration and initialization
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -14,6 +15,7 @@ const firebaseConfig = {
 // Initialize Firebase only once (client-side only)
 let app;
 let auth;
+let storage;
 
 // Lazy initialization function
 const initializeFirebase = () => {
@@ -36,6 +38,7 @@ const initializeFirebase = () => {
     try {
       app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
       auth = getAuth(app);
+      storage = getStorage(app);
       console.log('✅ Firebase initialized successfully');
     } catch (error) {
       console.error('❌ Firebase initialization error:', error);
@@ -48,4 +51,4 @@ if (typeof window !== 'undefined') {
   initializeFirebase();
 }
 
-export { app, auth, initializeFirebase };
+export { app, auth, storage, initializeFirebase };
