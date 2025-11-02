@@ -51,99 +51,86 @@ export default function HasilKartu({ prediction }) {
     : "Tidak terdeteksi indikasi diabetes. Pertahankan gaya hidup sehat, pola makan seimbang, dan olahraga teratur.";
 
   return (
-    <div
-      className={`bg-gradient-to-br ${cardGradient} p-8 rounded-2xl shadow-2xl text-white max-w-lg mx-auto mt-10 transform transition-all duration-300 hover:scale-[1.02] hover:shadow-3xl`}
-    >
-      {/* Header dengan ikon dan judul */}
-      <div className="flex items-center gap-3 mb-6">
-        <Icon className="w-12 h-12 drop-shadow-md animate-pulse" />
+    <div className={`bg-gradient-to-br ${cardGradient} p-4 sm:p-6 md:p-8 rounded-2xl shadow-2xl text-white w-full max-w-2xl mx-auto mt-6 mb-6`}>
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white border-opacity-30">
+        <Icon className="w-10 h-10 sm:w-12 sm:h-12 drop-shadow-md flex-shrink-0" />
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Hasil Diagnosa</h2>
-          <p className="text-sm opacity-80 mt-1">Diabetes Detection Result</p>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Hasil Diagnosa</h2>
+          <p className="text-xs sm:text-sm opacity-80 mt-1">Diabetes Detection Result</p>
         </div>
       </div>
 
-      {/* Status Diabetes - BIG */}
-      <div className="bg-white rounded-xl p-6 mb-6 shadow-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <p className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">Status Diabetes</p>
-            <p className={`text-5xl font-black ${isDiabetes ? 'text-red-600' : 'text-green-600'}`}>
-              {isDiabetes ? "TERDETEKSI" : "TIDAK TERDETEKSI"}
-            </p>
-          </div>
-          <Icon className={`w-16 h-16 ${isDiabetes ? 'text-red-500' : 'text-green-500'} opacity-30`} />
-        </div>
+      {/* Status Diabetes - BIG with white bg */}
+      <div className="bg-white rounded-xl p-4 sm:p-6 mb-4 shadow-lg">
+        <p className="text-xs font-bold text-gray-500 mb-2 uppercase">Status Diabetes</p>
+        <p className={`text-3xl sm:text-4xl md:text-5xl font-black ${isDiabetes ? 'text-red-600' : 'text-green-600'} leading-tight`}>
+          {isDiabetes ? "TERDETEKSI" : "TIDAK TERDETEKSI"}
+        </p>
       </div>
 
       {/* Probability */}
-      <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-5 mb-4 border border-white border-opacity-30">
-        <div className="flex items-center gap-3 mb-3">
-          <TrendingUp className="w-7 h-7" />
-          <div className="flex-1">
-            <p className="text-xs font-bold opacity-90 uppercase tracking-wide">Probabilitas Diabetes</p>
-            <p className="text-4xl font-black mt-1">{probabilityPercent}%</p>
+      <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-4 mb-3 border border-white border-opacity-30">
+        <div className="flex items-center gap-3 mb-2">
+          <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold opacity-90 uppercase">Probabilitas</p>
+            <p className="text-3xl sm:text-4xl font-black mt-1">{probabilityPercent}%</p>
           </div>
         </div>
-        {/* Progress bar */}
-        <div className="bg-white bg-opacity-20 rounded-full h-3 overflow-hidden shadow-inner">
+        <div className="bg-white bg-opacity-20 rounded-full h-2 sm:h-3 overflow-hidden">
           <div 
-            className="bg-white h-full rounded-full transition-all duration-500 shadow-lg"
+            className="bg-white h-full rounded-full transition-all duration-500"
             style={{ width: `${probabilityPercent}%` }}
           />
         </div>
       </div>
 
-      {/* Blood Sugar Level */}
-      <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-5 mb-4 border border-white border-opacity-30">
-        <div className="flex items-center gap-3 mb-3">
-          <Activity className="w-7 h-7" />
-          <div className="flex-1">
-            <p className="text-xs font-bold opacity-90 uppercase tracking-wide">Kadar Gula Darah</p>
-            <div className="flex items-baseline gap-2 mt-1">
-              <p className="text-4xl font-black">{blood_sugar_mgdl}</p>
-              <p className="text-xl font-bold opacity-90">mg/dL</p>
+      {/* Blood Sugar */}
+      <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-4 mb-3 border border-white border-opacity-30">
+        <div className="flex items-center gap-3 mb-2">
+          <Activity className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold opacity-90 uppercase">Gula Darah</p>
+            <div className="flex items-baseline gap-2 mt-1 flex-wrap">
+              <p className="text-3xl sm:text-4xl font-black">{blood_sugar_mgdl}</p>
+              <p className="text-lg sm:text-xl font-bold opacity-90">mg/dL</p>
             </div>
           </div>
         </div>
-        {/* Status badge */}
-        <div className="flex items-center gap-2 bg-white bg-opacity-20 rounded-lg px-4 py-2">
-          <span className={`text-2xl ${bloodSugarStatus.color}`}>
-            {bloodSugarStatus.icon}
-          </span>
-          <span className={`text-lg font-bold ${bloodSugarStatus.color}`}>
+        <div className="flex items-center gap-2 bg-white bg-opacity-20 rounded-lg px-3 py-1.5 mt-2">
+          <span className="text-xl sm:text-2xl">{bloodSugarStatus.icon}</span>
+          <span className={`text-sm sm:text-base font-bold ${bloodSugarStatus.color}`}>
             {bloodSugarStatus.text}
           </span>
         </div>
       </div>
 
-      {/* Risk Category Badge */}
-      <div className="mb-6">
-        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${
-          risk_level === 'high' ? 'bg-red-900 bg-opacity-50' :
-          risk_level === 'medium' ? 'bg-yellow-900 bg-opacity-50' :
-          'bg-green-900 bg-opacity-50'
+      {/* Risk Badge */}
+      <div className="mb-4">
+        <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-full text-xs sm:text-sm font-bold ${
+          risk_level === 'high' ? 'bg-red-900 bg-opacity-60' :
+          risk_level === 'medium' ? 'bg-yellow-900 bg-opacity-60' :
+          'bg-green-900 bg-opacity-60'
         }`}>
-          <AlertCircle className="w-4 h-4" />
-          {risk_category}
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <span>{risk_category}</span>
         </div>
       </div>
 
-      {/* Pesan dan Rekomendasi */}
-      <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4 mb-6">
-        <p className="text-sm leading-relaxed">{message}</p>
+      {/* Message */}
+      <div className="bg-white bg-opacity-15 rounded-xl p-4 mb-4">
+        <p className="text-xs sm:text-sm leading-relaxed">{message}</p>
       </div>
 
-      {/* Tombol kembali */}
-      <div className="flex justify-end">
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="flex items-center gap-2 bg-white text-gray-800 font-medium py-3 px-6 rounded-xl shadow-md hover:bg-gray-100 active:scale-[0.98] transition-all duration-200"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Kembali ke Dashboard
-        </button>
-      </div>
+      {/* Button */}
+      <button
+        onClick={() => router.push("/dashboard")}
+        className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-gray-800 font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-gray-100 active:scale-95 transition-all"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Kembali ke Dashboard
+      </button>
     </div>
   );
 }
