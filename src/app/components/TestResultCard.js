@@ -61,10 +61,10 @@ export default function HasilKartu({ prediction }) {
         </div>
       </div>
 
-      {/* Status Diabetes - BIG with white bg */}
-      <div className="bg-white rounded-xl p-4 sm:p-6 mb-4 shadow-lg">
-        <p className="text-xs font-bold text-gray-500 mb-2 uppercase">Status Diabetes</p>
-        <p className={`text-3xl sm:text-4xl md:text-5xl font-black ${isDiabetes ? 'text-red-600' : 'text-green-600'} leading-tight`}>
+      {/* Status Diabetes - NO white bg, direct text */}
+      <div className="mb-4">
+        <p className="text-xs font-bold opacity-80 mb-2 uppercase">Status Diabetes</p>
+        <p className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight break-words">
           {isDiabetes ? "TERDETEKSI" : "TIDAK TERDETEKSI"}
         </p>
       </div>
@@ -74,7 +74,7 @@ export default function HasilKartu({ prediction }) {
         <div className="flex items-center gap-3 mb-2">
           <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold opacity-90 uppercase">Probabilitas</p>
+            <p className="text-xs font-bold uppercase">Probabilitas</p>
             <p className="text-3xl sm:text-4xl font-black mt-1">{probabilityPercent}%</p>
           </div>
         </div>
@@ -91,10 +91,10 @@ export default function HasilKartu({ prediction }) {
         <div className="flex items-center gap-3 mb-2">
           <Activity className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold opacity-90 uppercase">Gula Darah</p>
+            <p className="text-xs font-bold uppercase">Gula Darah</p>
             <div className="flex items-baseline gap-2 mt-1 flex-wrap">
               <p className="text-3xl sm:text-4xl font-black">{blood_sugar_mgdl}</p>
-              <p className="text-lg sm:text-xl font-bold opacity-90">mg/dL</p>
+              <p className="text-lg sm:text-xl font-bold">mg/dL</p>
             </div>
           </div>
         </div>
