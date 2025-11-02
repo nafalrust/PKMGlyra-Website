@@ -6,12 +6,8 @@ import { HeartPulse, CheckCircle, ArrowLeft, Activity, TrendingUp, AlertCircle }
 export default function HasilKartu({ prediction }) {
   const router = useRouter();
   
-  // Debug logging
-  console.log("🔍 TestResultCard received:", prediction);
-  
   // Safety check
   if (!prediction) {
-    console.error("❌ No prediction data");
     return null;
   }
   
@@ -23,8 +19,6 @@ export default function HasilKartu({ prediction }) {
     risk_category,
     risk_level 
   } = prediction;
-  
-  console.log("📊 Data:", { diabetes_diagnosis, diabetes_probability, blood_sugar_mgdl });
   
   const isDiabetes = diabetes_diagnosis === "YES";
   const probabilityPercent = (diabetes_probability * 100).toFixed(1);
@@ -61,24 +55,24 @@ export default function HasilKartu({ prediction }) {
         </div>
       </div>
 
-      {/* Status Diabetes - NO white bg, direct text */}
-      <div className="mb-4">
-        <p className="text-xs font-bold opacity-80 mb-2 uppercase">Status Diabetes</p>
-        <p className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight break-words">
+      {/* Status Diabetes - Direct text, NO background */}
+      <div className="mb-6">
+        <p className="text-xs font-bold opacity-70 mb-2 uppercase tracking-wide">Status Diabetes</p>
+        <p className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight">
           {isDiabetes ? "TERDETEKSI" : "TIDAK TERDETEKSI"}
         </p>
       </div>
 
-      {/* Probability */}
-      <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-4 mb-3 border border-white border-opacity-30">
+      {/* Probability - Dark semi-transparent background */}
+      <div className="bg-black bg-opacity-20 rounded-xl p-4 mb-4">
         <div className="flex items-center gap-3 mb-2">
           <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold uppercase">Probabilitas</p>
+            <p className="text-xs font-bold uppercase tracking-wide">Probabilitas Diabetes</p>
             <p className="text-3xl sm:text-4xl font-black mt-1">{probabilityPercent}%</p>
           </div>
         </div>
-        <div className="bg-white bg-opacity-20 rounded-full h-2 sm:h-3 overflow-hidden">
+        <div className="bg-white bg-opacity-30 rounded-full h-3 overflow-hidden">
           <div 
             className="bg-white h-full rounded-full transition-all duration-500"
             style={{ width: `${probabilityPercent}%` }}
@@ -86,19 +80,19 @@ export default function HasilKartu({ prediction }) {
         </div>
       </div>
 
-      {/* Blood Sugar */}
-      <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-4 mb-3 border border-white border-opacity-30">
+      {/* Blood Sugar - Dark semi-transparent background */}
+      <div className="bg-black bg-opacity-20 rounded-xl p-4 mb-4">
         <div className="flex items-center gap-3 mb-2">
           <Activity className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold uppercase">Gula Darah</p>
+            <p className="text-xs font-bold uppercase tracking-wide">Kadar Gula Darah</p>
             <div className="flex items-baseline gap-2 mt-1 flex-wrap">
               <p className="text-3xl sm:text-4xl font-black">{blood_sugar_mgdl}</p>
               <p className="text-lg sm:text-xl font-bold">mg/dL</p>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2 bg-white bg-opacity-20 rounded-lg px-3 py-1.5 mt-2">
+        <div className="flex items-center gap-2 bg-black bg-opacity-10 rounded-lg px-3 py-2 mt-2">
           <span className="text-xl sm:text-2xl">{bloodSugarStatus.icon}</span>
           <span className={`text-sm sm:text-base font-bold ${bloodSugarStatus.color}`}>
             {bloodSugarStatus.text}
@@ -108,19 +102,19 @@ export default function HasilKartu({ prediction }) {
 
       {/* Risk Badge */}
       <div className="mb-4">
-        <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-full text-xs sm:text-sm font-bold ${
-          risk_level === 'high' ? 'bg-red-900 bg-opacity-60' :
-          risk_level === 'medium' ? 'bg-yellow-900 bg-opacity-60' :
-          'bg-green-900 bg-opacity-60'
+        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${
+          risk_level === 'high' ? 'bg-red-900 bg-opacity-70' :
+          risk_level === 'medium' ? 'bg-yellow-900 bg-opacity-70' :
+          'bg-green-900 bg-opacity-70'
         }`}>
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{risk_category}</span>
         </div>
       </div>
 
-      {/* Message */}
-      <div className="bg-white bg-opacity-15 rounded-xl p-4 mb-4">
-        <p className="text-xs sm:text-sm leading-relaxed">{message}</p>
+      {/* Message - Dark background */}
+      <div className="bg-black bg-opacity-20 rounded-xl p-4 mb-6">
+        <p className="text-sm leading-relaxed">{message}</p>
       </div>
 
       {/* Button */}
