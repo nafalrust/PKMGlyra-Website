@@ -2,6 +2,9 @@
 
 import Image from "next/image";
 import Lyra from "./assets/lyra.svg"
+import Ill1 from "./assets/ill1.svg";
+import Ill2 from "./assets/ill2.svg";
+import Ill3 from "./assets/ill3.svg";
 import HowtouseBg from "./assets/howtouse-bg.svg";
 import { useEffect, useState } from "react";
 import Background from "./assets/landingPage.svg"
@@ -132,7 +135,9 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row gap-6 md:gap-8 justify-center items-stretch w-full max-w-7xl z-10">
             {/* Card 1 */}
             <div data-aos="flip-right" data-aos-duration="800" data-aos-delay="200" className="bg-white border-2 border-red-400 rounded-lg p-6 md:p-8 flex-1 flex flex-col items-center w-full max-w-xl mx-auto">
-              <div className="w-full aspect-video bg-gray-300 rounded mb-4"></div>
+              <div className="w-full aspect-video bg-gray-300 rounded mb-4">
+                <Image src={Ill1} alt="Lyra Device" className="object-contain" />
+              </div>
               <h3 className="text-lg md:text-xl font-bold mb-2 text-black text-center">Sign Up or Login</h3>
               <p className="text-sm md:text-base text-gray-700 text-justify px-2 md:px-0">
                 Mulailah dengan <span className="font-semibold">mendaftar</span> di situs <span className="font-bold text-red-400">Glyra</span> dengan menekan tombol Sign Up. Jika sudah punya akun, cukup masuk menggunakan tombol Login.
@@ -140,7 +145,9 @@ export default function Home() {
             </div>
             {/* Card 2 */}
             <div data-aos="flip-right" data-aos-duration="800" data-aos-delay="400" className="bg-white border-2 border-red-400 rounded-lg p-6 md:p-8 flex-1 flex flex-col items-center w-full max-w-xl mx-auto">
-              <div className="w-full aspect-video bg-gray-300 rounded mb-4"></div>
+              <div className="w-full aspect-video bg-gray-300 rounded mb-4">
+                <Image src={Ill2} alt="Lyra Device" className="object-contain" />
+              </div>
               <h3 className="text-lg md:text-xl font-bold mb-2 text-black text-center">Lengkapi Formulir dan Gunakan Perangkat</h3>
               <p className="text-sm md:text-base text-gray-700 text-justify px-2 md:px-0">
                 Buka menu <span className="font-semibold">Add Medical Test</span> untuk memulai pemeriksaan. Isi formulir dengan informasi yang dibutuhkan lalu kirim. Nyalakan perangkat <span className="font-bold text-red-400">Glyra</span> dan tunggu sampai siap. Setelah siap, hembuskan napas ke dalam breathing bag dan massukan dalam alat.
@@ -148,7 +155,9 @@ export default function Home() {
             </div>
             {/* Card 3 */}
             <div data-aos="flip-right" data-aos-duration="800" data-aos-delay="600" className="bg-white border-2 border-red-400 rounded-lg p-6 md:p-8 flex-1 flex flex-col items-center w-full max-w-xl mx-auto">
-              <div className="w-full aspect-video bg-gray-300 rounded mb-4"></div>
+              <div className="w-full aspect-video rounded mb-4">
+                <Image src={Ill3} alt="Lyra Device" className="object-contain" />
+              </div>
               <h3 className="text-lg md:text-xl font-bold mb-2 text-black text-center">Pindai Kode QR dan Lihat Hasil</h3>
               <p className="text-sm md:text-base text-gray-700 text-justify px-2 md:px-0">
                 Setelah pemeriksaan, akan muncul <span className="font-semibold">kode QR</span> pada layar perangkat. Klik <span className="font-semibold">Pindai QR</span> di situs dan pindai kodenya. Hasil pemeriksaan akan ditampilkan segera.
