@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { getCurrentUser, onAuthStateChange, logout } from '@/lib/auth';
+import { getCurrentUser, onAuthStateChange, logout, getUserProfile } from '@/lib/auth';
 import Background from '../assets/landingPage.svg';
 import Lyra from '../assets/lyra.svg';
 import Aos from 'aos';
@@ -15,17 +15,19 @@ export const dynamic = 'force-dynamic';
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const isLoggingOutRef = useRef(false);
 
   useEffect(() => {
     // Check authentication
-    const unsubscribe = onAuthStateChange((currentUser) => {
+    const unsubscribe = onAuthStateChange(async (currentUser) => {
       if (!currentUser) {
         // If we initiated a logout, redirect to home instead of login
         if (isLoggingOutRef.current) {
           isLoggingOutRef.current = false;
           setUser(null);
+          setUserProfile(null);
           setLoading(false);
           return;
         }
@@ -33,6 +35,17 @@ export default function Dashboard() {
         router.push('/login');
       } else {
         setUser(currentUser);
+        
+        // Fetch user profile from Firestore
+        try {
+          const profileResult = await getUserProfile(currentUser.uid);
+          if (profileResult.success) {
+            setUserProfile(profileResult.user);
+          }
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+        }
+        
         setLoading(false);
       }
     });
@@ -98,7 +111,7 @@ export default function Dashboard() {
               <div className="bg-red-700 w-[50%] lg:w-[50%] h-6 md:h-8 mb-2 mx-auto lg:mx-0" data-aos="fade-right" data-aos-duration="1000" />
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold" data-aos="fade-down" data-aos-duration="1000">Welcome,</h1>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-red-700" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="100">
-                {user?.displayName || 'User'}
+                {userProfile?.fullName || userProfile?.nickname || user?.displayName || 'User'}
               </h1>
               <p className="text-sm sm:text-base md:text-lg mt-4 max-w-lg mx-auto lg:mx-0" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
                 Ready to start your health examination?

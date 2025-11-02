@@ -45,9 +45,10 @@ export default function MedicalTest() {
   const isLoggingOutRef = useRef(false);
 
   const handleSendData = async () => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
     const payload = { ...form, ...signal };
     try {
-      const response = await fetch('http://localhost:5000/api/medical-test/submit', {
+      const response = await fetch(`${API_URL}/api/medical-test/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

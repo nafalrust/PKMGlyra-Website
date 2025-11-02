@@ -276,3 +276,26 @@ export const updateUserProfile = async (uid, profileData) => {
     };
   }
 };
+
+/**
+ * Get user profile from backend (Firestore)
+ */
+export const getUserProfile = async (uid) => {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/user/${uid}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Get profile error:', error);
+    return {
+      success: false,
+      message: 'An error occurred while fetching profile',
+    };
+  }
+};
