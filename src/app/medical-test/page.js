@@ -120,7 +120,9 @@ export default function MedicalTest() {
         />
       )}
 
-      {apiResult && <HasilKartu hasil={apiResult.hasil} />}
+      {apiResult && apiResult.prediction && (
+        <HasilKartu prediction={apiResult.prediction} />
+      )}
     </div>
   );
 }
