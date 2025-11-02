@@ -41,7 +41,6 @@ export default function MedicalTest() {
 
   const handleSendData = async () => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-    const payload = { ...form, ...signal };
     console.log("🚀 handleSendData() dipanggil");
     const payload = { ...form, ...data };
 
