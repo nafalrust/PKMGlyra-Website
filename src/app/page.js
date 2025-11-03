@@ -101,7 +101,7 @@ export default function Home() {
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 md:mb-8 text-gray-800 text-center">
             Meet Our Device <span className="text-red-400">Glyra</span>
           </h2>
-          <div className="w-full max-w-sm md:max-w-md lg:w-96 h-64 md:h-80 lg:h-96 flex justify-center items-center mb-8 md:mb-10 mt-4 md:mt-6">
+          <div className="w-full max-w-sm md:max-w-md sm:w-96 lg:w-96 h-64 md:h-80 lg:h-96 flex justify-center items-center mb-8 md:mb-10 mt-4 md:mt-6">
             <div className="w-full h-full flex items-center justify-center p-3 md:p-6 rounded-lg">
               <ModelPrototype />
             </div>

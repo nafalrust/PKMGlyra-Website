@@ -1,11 +1,11 @@
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment } from '@react-three/drei';
 import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
 function Model() {
   const ref = useRef();
-  const { scene } = useGLTF('/type.glb');
+  const { scene } = useGLTF('/final.glb');
 
   useEffect(() => {
     if (!ref.current) return;
@@ -37,11 +37,39 @@ function Model() {
 
 export default function ModelPrototype() {
   return (
-    <Canvas className="w-full h-full" camera={{ position: [200, 200, 200], fov: 40 }}>
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[0, 0, 0]} intensity={0.6} />
-      <Model />
-      <OrbitControls enablePan={false} enableZoom={false} target={[0, 0, 0]} />
-    </Canvas>
+    <Canvas
+  className="w-full h-full"
+  camera={{ position: [0.185, 0.185, 0.185], fov: 40 }}
+>
+    {/* Cahaya lembut umum */}
+    <ambientLight intensity={0.6} />
+
+    {/* Cahaya utama dari arah tertentu */}
+    <directionalLight
+      position={[5, 5, 5]}
+      intensity={1.2}
+      castShadow
+    />
+
+    {/* Cahaya tambahan dari sisi lain untuk isi bayangan */}
+    <directionalLight
+      position={[-5, 2, 2]}
+      intensity={0.5}
+    />
+
+    {/* Sedikit cahaya langit (opsional tapi cantik) */}
+    <hemisphereLight
+      skyColor={"#ffffff"}
+      groundColor={"#666666"}
+      intensity={0.8}
+    />
+
+    {/* Environment HDRI dari drei (buat pantulan lebih realistis) */}
+    <Environment preset="city" />
+
+    <Model />
+
+    <OrbitControls enablePan={false} enableZoom={false} target={[0, 0, 0]} />
+  </Canvas>
   );
 }
