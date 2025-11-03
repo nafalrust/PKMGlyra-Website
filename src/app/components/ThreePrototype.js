@@ -41,7 +41,7 @@ export default function ModelPrototype() {
       <ambientLight intensity={0.8} />
       <directionalLight position={[0, 0, 0]} intensity={0.6} />
       <Model />
-      <OrbitControls enablePan={false} enableZoom={true} target={[0, 0, 0]} />
+      <OrbitControls enablePan={false} enableZoom={false} target={[0, 0, 0]} />
     </Canvas>
   );
 }
