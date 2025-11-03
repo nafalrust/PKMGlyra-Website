@@ -15,7 +15,8 @@ function Model() {
     const center = box.getCenter(new THREE.Vector3());
     const maxAxis = Math.max(size.x, size.y, size.z);
     // increase multiplier to zoom in more
-    const scale = maxAxis > 0 ? (2.4 / maxAxis) : 1;
+    // const scale = maxAxis > 0 ? (2.4 / maxAxis) : 1;
+    const scale = 1;
     ref.current.scale.setScalar(scale);
     // re-center to origin
     ref.current.position.x = -center.x * scale;
@@ -36,9 +37,9 @@ function Model() {
 
 export default function ModelPrototype() {
   return (
-    <Canvas className="w-full h-full" camera={{ position: [0, 0, 0.6], fov: 40 }}>
+    <Canvas className="w-full h-full" camera={{ position: [200, 200, 200], fov: 40 }}>
       <ambientLight intensity={0.8} />
-      <directionalLight position={[5, 5, 5]} intensity={0.6} />
+      <directionalLight position={[0, 0, 0]} intensity={0.6} />
       <Model />
       <OrbitControls enablePan={false} enableZoom={true} target={[0, 0, 0]} />
     </Canvas>
